@@ -53,7 +53,7 @@ p{line-height:1.5;margin:0 0 10px}
 .chips{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px}
 .chip{flex:none;border:2px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;color:var(--navy);font-weight:700}
 .chip.on{background:var(--navy2);color:#fff;border-color:var(--navy2)}
-input[type=search],input[type=text]{width:100%;padding:14px;border:2px solid var(--line);border-radius:12px;font:inherit;background:var(--card);color:var(--ink)}
+input[type=search],input[type=text],textarea{width:100%;padding:14px;border:2px solid var(--line);border-radius:12px;font:inherit;background:var(--card);color:var(--ink)}
 .player{background:var(--navy);border-radius:16px;overflow:hidden;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;color:#fff;text-align:center;padding:14px;margin-bottom:12px}
 .player video{width:100%;height:100%;background:#000}
 .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--card);border-top:2px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -71,6 +71,8 @@ input[type=search],input[type=text]{width:100%;padding:14px;border:2px solid var
 .toggle{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
 .sign{aspect-ratio:1;background:var(--navy);border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.8em;text-align:center;padding:8px}
 @media (prefers-reduced-motion:no-preference){ .fade{animation:f .25s ease-out} @keyframes f{from{opacity:0}to{opacity:1}} }
+.btn,.opt,.chip,.card{min-height:48px}.chip{display:inline-flex;align-items:center}textarea{min-height:110px;resize:vertical;font-family:inherit}
+.tile{min-height:110px}
 </style>
 </head>
 <body>
@@ -86,39 +88,73 @@ input[type=search],input[type=text]{width:100%;padding:14px;border:2px solid var
 
 window.CONTENT = {
   items: [
-    { id: "sign-of-cross", cat: "Prayers", title: "Sign of the Cross", status: "placeholder", video: null,
+    { id: "sign-of-cross", cat: "Prayers", title: "The Sign of the Cross", status: "placeholder", video: null,
       desc: "The prayer that begins and ends our prayer.",
-      text: "In the name of the Father, and of the Son, and of the Holy Spirit. Amen." },
-    { id: "our-father", cat: "Prayers", title: "Our Father", status: "placeholder", video: null,
+      text: "In the name of the Father, and of the Son, and of the Holy Spirit. Amen.",
+      points: ["We begin and end prayer with the Sign of the Cross.", "We name the Father, the Son and the Holy Spirit.", "Amen means \"so be it\"."],
+      quiz: [
+        { q: "Which three Persons do we name in the Sign of the Cross?", a: ["Father, Son and Holy Spirit", "Mary, Joseph and Jesus", "Peter, Paul and John"], c: 0, e: "We name the Father, the Son and the Holy Spirit: one God in three Persons." },
+        { q: "Which word ends the prayer?", a: ["Amen", "Glory", "Alleluia"], c: 0, e: "Amen means \"so be it\"." } ] },
+    { id: "our-father", cat: "Prayers", title: "The Lord's Prayer (Our Father)", status: "placeholder", video: null,
       desc: "The prayer Jesus taught His disciples.",
-      text: "Our Father, who art in heaven, hallowed be thy name; thy kingdom come; thy will be done on earth as it is in heaven. Give us this day our daily bread; and forgive us our trespasses as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil. Amen." },
+      text: "Our Father, who art in heaven, hallowed be thy name; thy kingdom come; thy will be done on earth as it is in heaven. Give us this day our daily bread; and forgive us our trespasses as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil. Amen.",
+      points: ["Jesus taught this prayer to His disciples.", "We call God our Father.", "We ask for daily bread, forgiveness and protection."],
+      quiz: [
+        { q: "Who taught the Lord's Prayer?", a: ["Jesus", "Moses", "Peter"], c: 0, e: "Jesus taught it when His disciples asked Him how to pray." },
+        { q: "What do we ask for in the Lord's Prayer?", a: ["Daily bread and forgiveness", "Money and fame", "Nothing at all"], c: 0, e: "We ask for what we need each day, for forgiveness, and for protection from evil." } ] },
     { id: "hail-mary", cat: "Prayers", title: "Hail Mary", status: "placeholder", video: null,
       desc: "A prayer to Mary, mother of Jesus.",
-      text: "Hail Mary, full of grace, the Lord is with thee. Blessed art thou amongst women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen." },
+      text: "Hail Mary, full of grace, the Lord is with thee. Blessed art thou amongst women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen.",
+      points: ["We greet Mary, the mother of Jesus.", "We ask Mary to pray for us.", "The prayer ends with Amen."],
+      quiz: [
+        { q: "Who do we speak to in the Hail Mary?", a: ["Mary", "Moses", "An angel"], c: 0, e: "The Hail Mary greets Mary, the mother of Jesus." },
+        { q: "What do we ask Mary to do?", a: ["Pray for us", "Give us gifts", "Sing for us"], c: 0, e: "Catholics ask Mary to pray with us and for us." } ] },
     { id: "glory-be", cat: "Prayers", title: "Glory Be", status: "placeholder", video: null,
       desc: "A short prayer of praise to the Trinity.",
-      text: "Glory be to the Father, and to the Son, and to the Holy Spirit, as it was in the beginning, is now, and ever shall be, world without end. Amen." },
+      text: "Glory be to the Father, and to the Son, and to the Holy Spirit, as it was in the beginning, is now, and ever shall be, world without end. Amen.",
+      points: ["A short prayer of praise.", "It praises the Father, the Son and the Holy Spirit."],
+      quiz: [ { q: "The Glory Be is a prayer of...", a: ["Praise", "Complaint", "Announcement"], c: 0, e: "It gives glory to God: Father, Son and Holy Spirit." } ] },
+    { id: "gospel-sample", cat: "Scripture", title: "Sunday Gospel (sample)", status: "placeholder", video: null,
+      desc: "Matthew 22:1-14, the wedding feast (reference to be checked against the lectionary).",
+      text: "Sample entry only. Jesus tells a parable about a king who prepares a wedding feast for his son and invites many guests. The approved Bible translation text, the USL video and a short explanation will be added once the licence and the review team are confirmed.",
+      points: ["Jesus teaches in parables.", "This parable is about a wedding feast.", "God invites everyone to share in His life."],
+      quiz: [ { q: "What kind of celebration is in the parable?", a: ["A wedding feast", "A harvest market", "A funeral"], c: 0, e: "In the parable, a king gives a wedding feast for his son." } ] },
     { id: "deaf-man-1", cat: "Scripture", title: "Jesus and the deaf man (part 1)", status: "placeholder", video: null, youtube: "wBSqKKqNKO4",
       credit: "Ugandan Sign Language Bible © 2013 DOOR International, licensed CC BY-SA 4.0. Embedded from YouTube, unchanged.",
       desc: "Jesus heals a man who could not hear (see Mark 7:31-37, reference to be confirmed).",
-      text: "Sample summary for the prototype: people bring a deaf man to Jesus and ask Him to help. Jesus heals him. The signed video shows the story in Ugandan Sign Language." },
+      text: "Sample summary for the prototype: people bring a deaf man to Jesus and ask Him to help. Jesus heals him. The signed video shows the story in Ugandan Sign Language.",
+      points: ["Jesus cares for people who cannot hear.", "The story is told here in Ugandan Sign Language."] },
     { id: "deaf-man-2", cat: "Scripture", title: "Jesus and the deaf man (part 2)", status: "placeholder", video: null, youtube: "HnK7EPL_ppg",
       credit: "Ugandan Sign Language Bible © 2013 DOOR International, licensed CC BY-SA 4.0. Embedded from YouTube, unchanged.",
       desc: "The second video on the same story.",
-      text: "Sample summary for the prototype: this video continues the story of Jesus and the deaf man. Text to be replaced by the approved Bible translation once the review team confirms it." },
+      text: "Sample summary for the prototype: this video continues the story of Jesus and the deaf man. Text to be replaced by the approved Bible translation once the review team confirms it.",
+      points: ["This video continues the story from part 1."] },
     { id: "ten-commandments", cat: "Scripture", title: "The Ten Commandments", status: "placeholder", video: null, youtube: "Ow3-NVYBifY",
       credit: "Ugandan Sign Language Bible © 2013 DOOR International, licensed CC BY-SA 4.0. Embedded from YouTube, unchanged.",
       desc: "God gives the Ten Commandments to Moses (see Exodus 20, reference to be confirmed).",
-      text: "Sample summary for the prototype: God gave the Ten Commandments to Moses to teach His people how to love God and love one another. Catholic catechesis numbers and words the commandments in a specific way, so a reviewer must check this lesson before publication." },
-    { id: "gospel-sample", cat: "Scripture", title: "Sunday Gospel: sample entry", status: "placeholder", video: null,
-      desc: "Matthew 22:1-14 (28th Sunday in Ordinary Time, Year A)",
-      text: "Sample entry only. The approved Bible translation text, the USL video and a short explanation will be added here once the licence and the review team are confirmed." },
-    { id: "mass-intro", cat: "Mass", title: "Parts of the Mass: overview", status: "placeholder", video: null,
-      desc: "Introductory Rites, Liturgy of the Word, Liturgy of the Eucharist, Concluding Rites.",
-      text: "The Mass has four main parts: the Introductory Rites, the Liturgy of the Word, the Liturgy of the Eucharist, and the Concluding Rites. Each lesson in this guide will be reviewed by a catechetical reviewer before publication." },
+      text: "Sample summary for the prototype: God gave the Ten Commandments to Moses to teach His people how to love God and love one another. Catholic catechesis numbers and words the commandments in a specific way, so a reviewer must check this lesson before publication.",
+      points: ["God gave the Ten Commandments to Moses.", "They teach us how to love God and one another."] },
+    { id: "mass-intro", cat: "Mass", title: "The Holy Mass", status: "placeholder", video: null,
+      desc: "The four main parts of the Mass.",
+      text: "The Mass has four main parts: the Introductory Rites, the Liturgy of the Word, the Liturgy of the Eucharist, and the Concluding Rites. Each lesson in this guide will be reviewed by a catechetical reviewer before publication.",
+      points: ["Introductory Rites: we gather, greet one another and ask for mercy.", "Liturgy of the Word: we hear Scripture and the Gospel.", "Liturgy of the Eucharist: we offer bread and wine and receive Communion.", "Concluding Rites: we receive a blessing and are sent out."],
+      quiz: [
+        { q: "In which part of the Mass do we hear the Gospel?", a: ["Liturgy of the Word", "Concluding Rites", "Introductory Rites"], c: 0, e: "The readings and the Gospel are in the Liturgy of the Word." },
+        { q: "How does the Mass end?", a: ["With a blessing and being sent out", "With the readings", "With the Creed"], c: 0, e: "The Concluding Rites include the blessing and the dismissal." } ] },
+    { id: "catechesis-basics", cat: "Catechesis", title: "Basic Catholic teaching", status: "placeholder", video: null,
+      desc: "What Catholics believe: a first overview.",
+      text: "Catholics believe in one God in three Persons: Father, Son and Holy Spirit. Jesus is God's Son who became man, died and rose again. The Church is the family of believers. The Bible is God's word, and the Sacraments are signs of God's love.",
+      points: ["One God in three Persons: Father, Son and Holy Spirit.", "Jesus is God's Son. He became man, died and rose again.", "The Church is the family of believers.", "The Bible is God's word to us.", "The Sacraments are signs of God's love."],
+      quiz: [
+        { q: "How many Persons are in the Holy Trinity?", a: ["Three", "Two", "Seven"], c: 0, e: "Father, Son and Holy Spirit: three Persons, one God." },
+        { q: "Who is Jesus?", a: ["God's Son who became man", "A prophet only", "An angel"], c: 0, e: "Catholics believe Jesus is true God and true man." } ] },
     { id: "sacrament-intro", cat: "Sacraments", title: "The seven Sacraments", status: "placeholder", video: null,
       desc: "A first overview for learners and families.",
-      text: "Baptism, Confirmation, Eucharist, Reconciliation, Anointing of the Sick, Holy Orders and Matrimony. Detailed preparation lessons will follow after review." }
+      text: "Baptism, Confirmation, Eucharist, Reconciliation, Anointing of the Sick, Holy Orders and Matrimony. Detailed preparation lessons will follow after review.",
+      points: ["Baptism, Confirmation and Eucharist begin Christian life.", "Reconciliation and Anointing of the Sick bring healing.", "Holy Orders and Matrimony serve communion and mission."],
+      quiz: [
+        { q: "How many Sacraments are there?", a: ["Seven", "Five", "Nine"], c: 0, e: "The Catholic Church teaches seven Sacraments." },
+        { q: "Which Sacrament brings us into the Church?", a: ["Baptism", "Matrimony", "Holy Orders"], c: 0, e: "Baptism is the first Sacrament and the door to the others." } ] }
   ],
   dictionary: [
     { word: "God", note: "Sign pending Deaf and USL review" },
@@ -173,9 +209,9 @@ window.CONTENT.permLabels = {
   browse:"Browse and watch content", save:"Save favourites", progress:"Track progress", feedback:"Send feedback",
   teach:"Prepare lessons and class packs", submit:"Submit videos, translations and dictionary entries",
   review_usl:"Confirm sign-language accuracy", review_doctrine:"Confirm doctrine and prayers",
-  reports:"View aggregated reports", distribute:"Share and distribute resources",
+  reports:"View and log pilot activity reports", distribute:"Share and distribute resources",
   tech_check:"Run technical checks", publish:"Publish approved content",
-  manage_users:"Manage users and roles", audit:"View the audit log"
+  feedback_view:"Read feedback and correction requests", manage_users:"Manage users and roles", audit:"View the audit log"
 };
 window.CONTENT.roles = [
   { id:"deaf_catholic", name:"Deaf Catholic", level:"User", group:"Primary beneficiaries",
@@ -186,16 +222,16 @@ window.CONTENT.roles = [
     perms:["browse","save","progress","feedback"] },
   { id:"clergy", name:"Priest or catechist", level:"Moderate admin", group:"Parish teaching",
     desc:"Teach with approved materials and confirm that doctrine and prayers are correct.",
-    perms:["browse","save","progress","feedback","teach","review_doctrine"] },
+    perms:["browse","save","progress","feedback","teach","review_doctrine","reports","feedback_view"] },
   { id:"usl_specialist", name:"USL interpreter or Deaf instructor", level:"Moderate admin", group:"Content creation",
     desc:"Create signed content and written translations, and confirm sign accuracy.",
-    perms:["browse","save","progress","feedback","submit","review_usl"] },
+    perms:["browse","save","progress","feedback","submit","review_usl","feedback_view"] },
   { id:"partner", name:"Diocesan leader or Deaf association", level:"Partner", group:"Partnerships",
     desc:"See aggregated reach and share the app through dioceses and associations.",
     perms:["browse","save","feedback","reports","distribute"] },
   { id:"dev", name:"Development team", level:"Super admin", group:"Platform",
     desc:"Runs the platform, users, roles and technical checks. Cannot confirm doctrine or signs.",
-    perms:["browse","feedback","tech_check","publish","manage_users","audit","reports"] }
+    perms:["browse","feedback","tech_check","publish","manage_users","audit","reports","feedback_view"] }
 ];
 // SAMPLE review queue
 window.CONTENT.queue = [
@@ -203,15 +239,23 @@ window.CONTENT.queue = [
   { id:"q2", title:"Hail Mary (USL video)", type:"Prayer video", by:"Sample contributor", usl:true, doctrine:false, tech:true, published:false },
   { id:"q3", title:"Dictionary: Church, Prayer, Peace", type:"Dictionary entries", by:"Sample contributor", usl:true, doctrine:true, tech:true, published:false }
 ];
+// SITE SETTINGS
+window.CONTENT.config = {
+  demoMode: true,                  // true = anyone can switch demo roles. Set false for a public launch.
+  deafCommunityConfirmed: false,   // set true only after Deaf Catholics have agreed to co-design the app
+  contactEmail: "catholicusl.platform@gmail.com",
+  coordinator: "Joseph Alibankoha, Project Coordinator",
+  pilotTarget: "UGX 5,000,000 to 10,000,000"
+};
 </script>
 <script src="content.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" onerror="void 0"></script>
 <script>
 const C = window.CONTENT;
 const S = { screen:"welcome", lang:"English", cat:"All", q:"", item:null, fav:[], quizI:0, quizScore:0, picked:null, quizDone:false,
-            role:"deaf_catholic", tlang:"English", atab:"queue", audit:[], queue:null, pack:[], msg:"", nTitle:"", nCat:"Prayers", nEn:"", nLg:"", camp:null, step:1, amount:null, other:"", phone:"", network:"MTN Mobile Money", name:"", consent:false, err:"", comment:"", posted:false, camps:null, textSize:"normal", contrast:"normal", progress:[], dq:"" };
-try{ const sv=JSON.parse(localStorage.getItem("cusl")||"{}"); Object.assign(S,{fav:sv.fav||[],progress:sv.progress||[],textSize:sv.textSize||"normal",contrast:sv.contrast||"normal"}); }catch(e){}
-function save(){ try{ localStorage.setItem("cusl",JSON.stringify({fav:S.fav,progress:S.progress,textSize:S.textSize,contrast:S.contrast})); }catch(e){} }
+            scores:{}, fb:[], acts:[], lowData:false, loaded:{}, qz:null, qFor:null, fbType:"Correction", fbWho:"Deaf learner", fbLesson:"General", fbMsg:"", fbSaved:null, nAct:"Training", nParish:"", nCount:"", role:"deaf_catholic", tlang:"English", atab:"queue", audit:[], queue:null, pack:[], msg:"", nTitle:"", nCat:"Prayers", nEn:"", nLg:"", camp:null, step:1, amount:null, other:"", phone:"", network:"MTN Mobile Money", name:"", consent:false, err:"", comment:"", posted:false, camps:null, textSize:"normal", contrast:"normal", progress:[], dq:"" };
+try{ const sv=JSON.parse(localStorage.getItem("cusl")||"{}"); ["fav","progress","scores","fb","acts"].forEach(k=>{ if(sv[k]) S[k]=sv[k]; }); ["textSize","contrast","lowData"].forEach(k=>{ if(sv[k]!==undefined) S[k]=sv[k]; }); }catch(e){}
+function save(){ try{ localStorage.setItem("cusl",JSON.stringify({fav:S.fav,progress:S.progress,scores:S.scores,fb:S.fb,acts:S.acts,textSize:S.textSize,contrast:S.contrast,lowData:S.lowData})); }catch(e){} }
 function applyPrefs(){ document.documentElement.style.setProperty("--fs",S.textSize==="large"?"20px":"17px"); document.documentElement.dataset.contrast=S.contrast; }
 applyPrefs();
 S.camps = JSON.parse(JSON.stringify(C.campaigns));
@@ -240,12 +284,13 @@ const statusBadge = s => s==="approved" ? '<span class="badge ok">Approved</span
 
 function nav(){
   const t=[["home","Home",I.home],["library","Library",I.lib],["dictionary","Dictionary",I.search],["profile","Profile",I.user]];
-  const cur = {item:"library",quiz:"home",mass:"home",donate:"profile",roles:"profile",admin:"profile",campaign:"profile",campaignDetail:"profile",accessibility:"profile",about:"profile"}[S.screen]||S.screen;
+  const cur = {item:"library",quiz:"home",mass:"home",donate:"profile",progress:"profile",privacy:"profile",project:"home",roles:"profile",admin:"profile",campaign:"profile",campaignDetail:"profile",accessibility:"profile",about:"profile"}[S.screen]||S.screen;
   return '<nav class="nav" aria-label="Main">'+t.map(([k,l,ic])=>`<button class="${cur===k?"on":""}" data-go="${k}" aria-label="${l}">${ic}<span>${l}</span></button>`).join("")+'</nav>';
 }
 const hdr = (title, back="home") => `<div class="topbar"><button class="back" data-go="${back}" aria-label="Back">&#8592;</button><h1 style="margin:0">${esc(title)}</h1></div>`;
 
 function videoBox(it){
+  if(it.youtube && S.lowData && !S.loaded[it.youtube]) return `<div class="player"><div><p style="margin:0 0 10px"><b>Low-data mode</b><br><span style="opacity:.85;font-size:.9em">The video loads only when you tap.</span></p><button class="btn gold small" data-loadv="${esc(it.youtube)}">Load video</button></div></div>`;
   if(it.youtube) return `<div class="player" style="padding:0"><iframe src="https://www.youtube-nocookie.com/embed/${esc(it.youtube)}" title="${esc(it.title)}" style="width:100%;height:100%;border:0" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
     <p style="font-size:.9em"><a href="https://www.youtube.com/watch?v=${esc(it.youtube)}" target="_blank" rel="noopener" style="color:var(--navy2);font-weight:700">Watch on YouTube</a></p>`;
   if(it.video) return `<div class="player"><video controls playsinline preload="metadata" src="${esc(it.video)}" onerror="this.parentNode.innerHTML='<div>Video file not found.<br>Check the file name in content.js and the videos folder.</div>'"></video></div>`;
@@ -263,11 +308,16 @@ const screens = {
     L.map(([n,ok])=>`<button class="opt ${S.lang===n?"sel":""}" ${ok?`data-lang="${n}"`:"disabled"}>${n}${ok?"":' <span class="badge" style="margin-left:auto">Coming soon</span>'}</button>`).join("")+
     `<button class="btn" data-go="home" style="margin-top:12px">Continue</button></div>`; },
 
-  home(){ const T=[["Prayers","Prayers",I.hands,"library"],["Catechesis","Catechesis",I.book,"quiz"],["Scripture","Scripture & Gospel",I.cross,"library"],["Mass","Mass guide",I.cup,"library"],["Sacraments","Sacraments",I.water,"library"],["Dictionary","USL dictionary",I.search,"dictionary"]];
-    return `<div class="screen fade"><div class="hero"><div class="sun"></div><h1>Welcome</h1><p style="margin:0;max-width:75%">Catholic Faith, Clearly Communicated.</p></div>
+  home(){ const cf=C.config; const next=C.items.find(i=>!S.progress.includes(i.id));
+    const T=[["Scripture","Scripture",I.cross,"library"],["Prayers","Prayers",I.hands,"library"],["Mass","The Holy Mass",I.cup,"library"],["Dictionary","Learn USL",I.search,"dictionary"],["Catechesis","Catechesis",I.book,"library"],["Sacraments","Sacraments",I.water,"library"]];
+    return `<div class="screen fade"><div class="hero"><div class="sun"></div><div class="row" style="margin-bottom:10px"><img src="icon-192.png" alt="" style="width:64px;height:64px;border-radius:14px"><div><b style="font-size:1.3em">Catholic USL</b><br><span style="opacity:.9;font-size:.9em">Catholic Faith, Clearly Communicated.</span></div></div>
+    <p style="margin:0">Catholic prayers, Scripture and teaching in Ugandan Sign Language, with words alongside, for Deaf Catholics and their communities.</p></div>
     <div class="grid">`+T.map(([k,l,ic,to])=>`<button class="tile" data-tile="${k}" data-to="${to}">${ic}<span>${l}</span></button>`).join("")+`</div>
-    <h2>Test yourself</h2><button class="card" data-go="quiz"><b>Short quiz</b><br><span class="muted">3 questions on prayers, Mass and Sacraments</span></button>
-    <div class="notice">This is a prototype. Content marked <b>sample</b> has not been reviewed by Deaf USL users or Church reviewers.</div></div>`+nav(); },
+    ${cf.deafCommunityConfirmed?'<div class="notice" style="background:#E8F5EC;border-color:#8AD0A3"><b>Designed with the Deaf community.</b></div>':'<div class="notice">We are inviting Deaf Catholics to help design this app. All lessons are demonstrations until reviewed.</div>'}
+    ${next?`<h2>Continue learning</h2><button class="card" data-item="${next.id}"><b>${esc(next.title)}</b><br><span class="muted">${esc(next.desc)}</span></button>`:'<h2>Well done</h2><p>You have completed every lesson.</p>'}
+    <button class="card" data-go="progress"><b>My progress</b><br><span class="muted">${S.progress.length} of ${C.items.length} lessons completed</span></button>
+    <button class="card" data-quiz="general"><b>Short quiz</b><br><span class="muted">${C.quiz.length} questions on prayers, Mass and Sacraments</span></button>
+    <button class="card" data-go="project"><b>The project and how to partner</b><br><span class="muted">Problem, pilot plan and funding goal</span></button></div>`+nav(); },
 
   library(){ const cats=["All",...new Set(C.items.map(i=>i.cat))]; const q=S.q.toLowerCase();
     const list=C.items.filter(i=>(S.cat==="All"||i.cat===S.cat)&&(!q||(i.title+i.desc).toLowerCase().includes(q)));
@@ -275,34 +325,41 @@ const screens = {
     <div class="chips" role="tablist">`+cats.map(c=>`<button class="chip ${S.cat===c?"on":""}" data-cat="${c}">${c}</button>`).join("")+`</div>`+
     (list.length?list.map(i=>`<button class="card" data-item="${i.id}"><div class="row"><div class="thumb">${I.play}</div><div><b>${esc(i.title)}</b><br><span class="muted" style="font-size:.9em">${esc(i.desc)}</span><br>${statusBadge(i.status)}</div></div></button>`).join(""):'<p class="muted">Nothing found. Try a different word or choose All.</p>')+`</div>`+nav(); },
 
-  item(){ const i=C.items.find(x=>x.id===S.item); const f=S.fav.includes(i.id), d=S.progress.includes(i.id);
-    return `<div class="screen fade">${hdr(i.title,"library")}${videoBox(i)}${creditLine(i)}${statusBadge(i.status)}
+  item(){ const i=C.items.find(x=>x.id===S.item); const f=S.fav.includes(i.id), d=S.progress.includes(i.id); const sc=S.scores[i.id];
+    return `<div class="screen fade">${hdr(i.title,"library")}<div class="notice" style="margin-top:0">Demonstration lesson. Not yet verified by Catholic reviewers or Deaf USL users.</div>${videoBox(i)}${creditLine(i)}${statusBadge(i.status)}
+    ${i.points?`<h2>Key points</h2><ul>${i.points.map(p=>`<li>${esc(p)}</li>`).join("")}</ul>`:""}
     <h2>Words for readers</h2><div class="chips">${LANGS.map(l=>`<button class="chip ${S.tlang===l?"on":""}" data-tl="${l}">${l}</button>`).join("")}</div>${getTrans(i,S.tlang)?`<p>${esc(getTrans(i,S.tlang))}</p>`:`<div class="notice">${S.tlang} words are not added yet. Showing English.</div><p>${esc(i.text)}</p>`}
-    <div class="row" style="margin-top:12px"><button class="btn ghost" data-fav="${i.id}">${f?"Saved":"Save"}</button><button class="btn ${d?"ghost":""}" data-done="${i.id}">${d?"Completed":"Mark as learned"}</button></div>
-    <div class="notice">Found a mistake in the sign or the text? <button class="btn small ghost" data-go="feedback" style="margin-left:6px">Report a problem</button></div></div>`+nav(); },
+    ${i.quiz?`<button class="btn gold" style="margin-top:12px" data-quiz="${i.id}">Practise: ${i.quiz.length}-question quiz</button>${sc?`<p class="muted" style="margin-top:6px">Best score: ${sc.best} of ${sc.total}</p>`:""}`:""}
+    <div class="row" style="margin-top:12px"><button class="btn ghost" data-fav="${i.id}">${f?"Saved":"Save lesson"}</button><button class="btn ${d?"ghost":""}" data-done="${i.id}">${d?"Completed":"Mark as learned"}</button></div>
+    <div class="notice">Something wrong in the sign or the words? <button class="btn small ghost" data-fbfor="${i.id}" style="margin-top:8px">Suggest a correction</button></div></div>`+nav(); },
 
   dictionary(){ const q=S.dq.toLowerCase(); const L=C.dictionary.filter(d=>!q||d.word.toLowerCase().includes(q));
     return `<div class="screen fade"><h1>USL dictionary</h1><input type="search" id="dq" placeholder="Search a word" value="${esc(S.dq)}" aria-label="Search dictionary">
     <p class="muted" style="margin-top:10px">Signs appear after review by Deaf USL users and qualified specialists.</p><div class="grid">`+
     L.map(d=>`<div><div class="sign"><span><b style="font-size:1.2em">${esc(d.word)}</b><br>Sign pending</span></div><p class="muted" style="font-size:.8em;margin-top:6px">${esc(d.note)}</p></div>`).join("")+`</div></div>`+nav(); },
 
-  quiz(){ const Q=C.quiz;
-    if(S.quizDone) return `<div class="screen fade">${hdr("Quiz result","home")}<div class="hero"><h1>${S.quizScore} of ${Q.length}</h1><p style="margin:0">Good effort. Keep learning.</p></div><button class="btn" data-restart="1">Try again</button></div>`+nav();
+  quiz(){ const Q=S.qz||C.quiz; const back=S.qFor?"item":"home";
+    if(S.quizDone){ const pass=S.quizScore/Q.length>=0.6;
+      return `<div class="screen fade">${hdr("Quiz result",back)}<div class="hero"><h1>${S.quizScore} of ${Q.length}</h1><p style="margin:0">${S.qFor?(pass?"Lesson completed. Well done.":"Read the key points again and try once more."):"Good effort. Keep learning."}</p></div>
+      <button class="btn" data-quiz="${S.qFor||"general"}">Try again</button>${S.qFor?`<button class="btn ghost" style="margin-top:10px" data-go="item">Back to the lesson</button>`:`<button class="btn ghost" style="margin-top:10px" data-go="progress">See my progress</button>`}</div>`+nav(); }
     const q=Q[S.quizI];
-    return `<div class="screen fade">${hdr("Quiz","home")}<div class="bar" aria-hidden="true"><i style="width:${(S.quizI/Q.length)*100}%"></i></div>
+    return `<div class="screen fade">${hdr(S.qFor?"Lesson quiz":"Quiz",back)}<div class="bar" aria-hidden="true"><i style="width:${(S.quizI/Q.length)*100}%"></i></div>
     <p class="muted" style="margin-top:8px">Question ${S.quizI+1} of ${Q.length}</p><h2 style="margin-top:0">${esc(q.q)}</h2>`+
     q.a.map((a,k)=>{ let cl=""; if(S.picked!==null){ if(k===q.c)cl="good"; else if(k===S.picked)cl="bad"; }
       return `<button class="opt ${cl}" data-pick="${k}" ${S.picked!==null?"disabled":""}>${esc(a)}</button>`; }).join("")+
-    (S.picked!==null?`<button class="btn" data-next="1">${S.quizI+1<Q.length?"Next question":"See result"}</button>`:"")+`</div>`+nav(); },
+    (S.picked!==null?`<div class="notice" role="status"><b>${S.picked===q.c?"Correct.":"Not quite."}</b> ${esc(q.e||"")}</div><button class="btn" data-next="1">${S.quizI+1<Q.length?"Next question":"See result"}</button>`:"")+`</div>`+nav(); },
 
-  profile(){ return `<div class="screen fade"><h1>Profile</h1><p class="muted">Guest learner. No account or personal data is collected in this prototype.</p>
-    <div class="card"><b>My progress</b><div class="bar" style="margin:8px 0"><i style="width:${Math.round(S.progress.length/C.items.length*100)}%"></i></div><span class="muted">${S.progress.length} of ${C.items.length} lessons learned</span></div>
-    <button class="card" data-go="roles"><b>Role (demo): ${esc(role().name)}</b><br><span class="muted">${esc(role().level)}. Tap to switch.</span></button>${tabsFor().length?'<button class="card" data-go="admin"><b>Open dashboard</b></button>':""}
+  profile(){ const dm=C.config.demoMode;
+    return `<div class="screen fade"><h1>Profile</h1><p class="muted">Guest learner. No account is needed and no personal data is sent anywhere.</p>
+    <button class="card" data-go="progress"><b>My progress</b><div class="bar" style="margin:8px 0"><i style="width:${Math.round(S.progress.length/C.items.length*100)}%"></i></div><span class="muted">${S.progress.length} of ${C.items.length} lessons completed</span></button>
+    ${dm?`<button class="card" data-go="roles"><b>Role (demo): ${esc(role().name)}</b><br><span class="muted">${esc(role().level)}. Tap to switch.</span></button>`:""}${tabsFor().length?'<button class="card" data-go="admin"><b>Open dashboard</b></button>':""}
     <button class="card" data-go="favorites"><b>Saved lessons</b> (${S.fav.length})</button>
     <button class="card" data-go="accessibility"><b>Accessibility and settings</b></button>
+    <button class="card" data-go="feedback"><b>Feedback, corrections and requests</b></button>
+    <button class="card" data-go="project"><b>The project and partnership</b></button>
     <button class="card" data-go="campaign"><b>Support Deaf ministry</b><br><span class="muted">Demonstration only</span></button>
-    <button class="card" data-go="feedback"><b>Feedback and report a problem</b></button>
-    <button class="card" data-go="about"><b>About and privacy</b></button></div>`+nav(); },
+    <button class="card" data-go="privacy"><b>Privacy and my data</b></button>
+    <button class="card" data-go="about"><b>About</b></button></div>`+nav(); },
 
   favorites(){ const L=C.items.filter(i=>S.fav.includes(i.id));
     return `<div class="screen fade">${hdr("Saved lessons","profile")}`+(L.length?L.map(i=>`<button class="card" data-item="${i.id}"><b>${esc(i.title)}</b></button>`).join(""):'<p class="muted">Nothing saved yet. Open a lesson and choose Save.</p>')+`</div>`+nav(); },
@@ -310,18 +367,59 @@ const screens = {
   accessibility(){ return `<div class="screen fade">${hdr("Accessibility","profile")}
     <div class="toggle"><span>Large text</span><button class="chip ${S.textSize==="large"?"on":""}" data-pref="text">${S.textSize==="large"?"On":"Off"}</button></div>
     <div class="toggle"><span>High contrast</span><button class="chip ${S.contrast==="high"?"on":""}" data-pref="contrast">${S.contrast==="high"?"On":"Off"}</button></div>
-    <p class="muted" style="margin-top:14px">Every video will have readable text beside it. Offline downloads will be added where licensing allows.</p></div>`+nav(); },
+    <div class="toggle"><span>Low-data mode<br><span class="muted" style="font-size:.85em">Videos load only when you tap</span></span><button class="chip ${S.lowData?"on":""}" data-pref="low">${S.lowData?"On":"Off"}</button></div>
+    <p class="muted" style="margin-top:14px">Every video has words for readers beside it. After your first visit, lesson text works without internet. Videos need a connection. Full offline lessons come in a later stage.</p></div>`+nav(); },
 
-  feedback(){ return `<div class="screen fade">${hdr("Report a problem","profile")}
-    <p class="muted">Tell us what looks wrong: a sign, a prayer, or the app itself.</p>
-    <input type="text" id="fb" placeholder="Describe the problem" aria-label="Describe the problem">
-    <button class="btn" id="sendfb" style="margin-top:12px">Send</button><p id="fbmsg" class="muted" style="margin-top:10px"></p>
-    <p class="muted" style="font-size:.9em">Prototype: this does not send anything yet. Contact: catholicusl.platform@gmail.com</p></div>`+nav(); },
+  feedback(){ const types=["Correction","Request content","Comment"];
+    if(S.fbSaved){ const f=S.fbSaved; const body=encodeURIComponent(f.type+" ("+f.who+")\nLesson: "+f.lessonTitle+"\n\n"+f.msg);
+      return `<div class="screen fade">${hdr("Thank you","profile")}<div class="hero"><h1>Saved</h1><p style="margin:0">Your ${esc(f.type.toLowerCase())} is saved on this device and visible to reviewers in the demo dashboard.</p></div>
+      <p>To send it to the project team now, use email:</p><a class="btn gold" href="mailto:${esc(C.config.contactEmail)}?subject=${encodeURIComponent("Catholic USL feedback: "+f.type)}&body=${body}">Send by email</a>
+      <button class="btn ghost" style="margin-top:10px" data-fbnew="1">Send another</button></div>`+nav(); }
+    return `<div class="screen fade">${hdr("Feedback","profile")}<p class="muted">Deaf learners, priests and catechists: tell us what to correct or what to add.</p>
+    <div class="chips">`+types.map(t=>`<button class="chip ${S.fbType===t?"on":""}" data-fbt="${t}">${t}</button>`).join("")+`</div>
+    <h2 style="margin-top:4px">I am a</h2><select data-f="fbWho" aria-label="I am a" style="width:100%;padding:14px;border:2px solid var(--line);border-radius:12px;font:inherit;background:var(--card);color:var(--ink)">`+["Deaf learner","Priest or catechist","USL interpreter or Deaf instructor","Parent or family member","Other"].map(x=>`<option ${S.fbWho===x?"selected":""}>${x}</option>`).join("")+`</select>
+    <h2>About which lesson?</h2><select data-f="fbLesson" aria-label="Lesson" style="width:100%;padding:14px;border:2px solid var(--line);border-radius:12px;font:inherit;background:var(--card);color:var(--ink)"><option value="General">General or new content</option>`+C.items.map(i=>`<option value="${i.id}" ${S.fbLesson===i.id?"selected":""}>${esc(i.title)}</option>`).join("")+`</select>
+    <h2>Your message</h2><textarea data-f="fbMsg" aria-label="Your message" placeholder="What should change, or what would you like to learn?">${esc(S.fbMsg)}</textarea>${S.err?`<p style="color:#B3261E;font-weight:700" role="alert">${esc(S.err)}</p>`:""}
+    <button class="btn" style="margin-top:12px" data-fbsave="1">Save feedback</button>
+    <p class="muted" style="font-size:.9em;margin-top:10px">Please do not include private details. Contact: ${esc(C.config.contactEmail)}</p></div>`+nav(); },
 
   about(){ return `<div class="screen fade">${hdr("About","profile")}<img src="logo.png" alt="" style="width:60%;display:block;margin:0 auto 12px;border-radius:16px">
     <p>Catholic USL helps Deaf Catholics in Uganda take part in the life of the Church through Ugandan Sign Language, readable text and learning tools.</p>
     <p>This is a concept prototype. Sample content is not approved teaching. Deaf community representatives, USL specialists and Church reviewers will validate all content before publication.</p>
-    <p><b>Privacy:</b> this prototype collects no personal information.</p></div>`+nav(); },
+    <button class="btn ghost" data-go="project">The project and partnership</button><button class="btn ghost" style="margin-top:10px" data-go="privacy">Privacy and my data</button></div>`+nav(); },
+
+  progress(){ const cats=[...new Set(C.items.map(i=>i.cat))]; const total=C.items.length, done=S.progress.filter(id=>C.items.find(i=>i.id===id)).length; const next=C.items.find(i=>!S.progress.includes(i.id));
+    const sc=C.items.filter(i=>S.scores[i.id]);
+    return `<div class="screen fade">${hdr("My progress","profile")}
+    <div class="hero"><h1>${done} of ${total}</h1><p style="margin:0">lessons completed</p><div class="bar" style="margin-top:10px;background:rgba(255,255,255,.3)"><i style="width:${Math.round(done/total*100)}%;background:var(--gold)"></i></div></div>
+    <h2>By topic</h2>`+cats.map(k=>{ const L=C.items.filter(i=>i.cat===k), d=L.filter(i=>S.progress.includes(i.id)).length; return `<div class="card"><div class="row" style="justify-content:space-between"><b>${k}</b><span class="muted">${d} of ${L.length}</span></div><div class="bar" style="margin-top:8px"><i style="width:${Math.round(d/L.length*100)}%"></i></div></div>`; }).join("")+
+    `<h2>Quiz scores</h2>`+(sc.length?sc.map(i=>`<div class="toggle"><span>${esc(i.title)}</span><b>${S.scores[i.id].best} of ${S.scores[i.id].total}</b></div>`).join(""):'<p class="muted">No quizzes taken yet. Open a lesson and tap Practise.</p>')+
+    (next?`<button class="btn gold" style="margin-top:16px" data-item="${next.id}">Continue: ${esc(next.title)}</button>`:"")+
+    `<p class="muted" style="font-size:.85em;margin-top:12px">Your progress is saved on this phone only.</p></div>`+nav(); },
+
+  project(){ const cf=C.config; const mail="mailto:"+cf.contactEmail+"?subject="+encodeURIComponent("Catholic USL partnership");
+    return `<div class="screen fade">${hdr("The project","home")}
+    <div class="hero"><h1>Catholic Faith, Clearly Communicated.</h1><p style="margin:0">A mobile platform that brings Catholic prayer, Scripture and teaching to Deaf Catholics in Uganda through Ugandan Sign Language.</p></div>
+    <h2>The problem</h2><p>Deaf Catholics and other Deaf people face barriers when taking part in Mass, learning the faith, praying and understanding Scripture. Few materials exist in Ugandan Sign Language. Figures will be added from UNAD and national data once confirmed.</p>
+    <h2>Who it serves</h2><ul><li>Deaf Catholics and Deaf youth</li><li>Catechists, priests and religious</li><li>Parishes, dioceses and Catholic schools</li><li>USL interpreters and families of Deaf people</li></ul>
+    <h2>Proposed six-month pilot</h2>
+    <div class="card"><b>Month 1: Listen.</b> Meet Deaf Catholics, agree needs and the review team.</div>
+    <div class="card"><b>Months 2 to 3: Create.</b> Record and review the first signed lessons with Deaf instructors and Catholic reviewers.</div>
+    <div class="card"><b>Months 3 to 4: Build and test.</b> Finish the app, test on real phones and low data.</div>
+    <div class="card"><b>Month 5: Pilot.</b> Use it in selected parishes with catechists and Deaf learners.</div>
+    <div class="card"><b>Month 6: Learn and report.</b> Gather feedback, report results and plan the next phase.</div>
+    <h2>Funding goal</h2><div class="notice" style="margin-top:0"><b>Proposed target: ${esc(cf.pilotTarget)}.</b> This is a proposed figure for the pilot, not a confirmed cost. Technical quotations are needed first. No donations are collected in this app yet.</div>
+    <h2>How partners can help</h2><ul><li>Deaf Catholics: help design and test</li><li>USL interpreters and Deaf instructors: create and check signs</li><li>Priests and catechists: review doctrine and use it in parishes</li><li>Dioceses and Deaf associations: share and host the pilot</li><li>Funders and technology partners: support costs and tools</li></ul>
+    <h2>Contact</h2><p>${esc(cf.coordinator)}<br>${esc(cf.contactEmail)}</p>
+    <a class="btn gold" href="${mail}">Email the project team</a>
+    <a class="btn ghost" style="margin-top:10px" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent("Catholic USL: Catholic prayers and teaching in Ugandan Sign Language. "+SITE)}">Share on WhatsApp</a></div>`+nav(); },
+
+  privacy(){ return `<div class="screen fade">${hdr("Privacy and my data","profile")}
+    <h2>What this app stores</h2><p>Only on your phone: saved lessons, progress, quiz scores, text settings and any feedback you saved. No account is needed. Nothing is sent to a server by this prototype.</p>
+    <h2>Videos</h2><p>Some videos are shown through YouTube using its privacy-enhanced player. YouTube may collect data when you play them. Low-data mode loads videos only when you tap.</p>
+    <h2>Admin access</h2><p>In the live app, only people given a role by an administrator can review, publish or see reports. The role switcher you may see is a demo. The live version will require sign-in and database rules that block everyone else.</p>
+    <h2>Reports</h2><p>Reports show totals only. Information about Deaf learners is not shown to the public.</p>
+    <button class="btn ghost" data-wipe="1">Delete my data on this phone</button></div>`+nav(); },
 
   roles(){ return `<div class="screen fade">${hdr("Choose a role (demo)","profile")}
     <div class="notice">Demo only, so you can see what each role can do. In the live app an administrator assigns roles after sign-in. Nobody picks their own.</div>`+
@@ -384,27 +482,35 @@ const screens = {
 const LANGS=["English","Luganda","Runyoro-Rutooro","Kiswahili"];
 const role = () => C.roles.find(r=>r.id===S.role)||C.roles[0];
 const can = p => role().perms.includes(p);
-const TABS=[["queue","Review queue",["review_doctrine","review_usl","tech_check","publish"]],["submit","Submit content",["submit"]],["teach","Teaching",["teach"]],["reports","Reports",["reports"]],["share","Share",["distribute"]],["users","Users and roles",["manage_users"]],["audit","Audit log",["audit"]]];
+const TABS=[["queue","Review queue",["review_doctrine","review_usl","tech_check","publish"]],["submit","Submit content",["submit"]],["teach","Teaching",["teach"]],["feedback","Feedback",["feedback_view"]],["reports","Reports",["reports"]],["share","Share",["distribute"]],["users","Users and roles",["manage_users"]],["audit","Audit log",["audit"]]];
 const tabsFor = () => TABS.filter(t=>t[2].some(can));
 const logA = m => S.audit.unshift({t:new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}), who:role().name, m});
 const getTrans = (it,l) => (it.translations&&it.translations[l]) || (l==="English"?it.text:null);
 const chk = (ok,l) => `<span class="badge ${ok?"ok":""}">${l}: ${ok?"done":"pending"}</span> `;
 function adminTab(){
   const t=S.atab;
-  if(t==="queue") return '<p class="muted">Each item needs sign accuracy, doctrine and a technical check before it can be published. Different people do each check.</p>'+
+  if(t==="queue") return '<p class="muted">Each item needs signs, doctrine and a technical check before it can be published. Different people do each check.</p>'+
     S.queue.map(q=>{ const done=q.usl&&q.doctrine&&q.tech; const b=(k,l)=>`<button class="btn ghost small" style="margin:8px 8px 0 0" data-qa="${q.id}:${k}">${l}</button>`;
-      return `<div class="card"><b>${esc(q.title)}</b><br><span class="muted" style="font-size:.9em">${esc(q.type)} &middot; by ${esc(q.by)}</span><br>${chk(q.usl,"Signs")}${chk(q.doctrine,"Doctrine")}${chk(q.tech,"Technical")}${q.published?'<span class="badge ok">Published (demo)</span>':""}<div>`+
-      (can("review_usl")&&!q.usl?b("usl","Confirm signs are accurate"):"")+(can("review_doctrine")&&!q.doctrine?b("doctrine","Confirm doctrine is correct"):"")+(can("tech_check")&&!q.tech?b("tech","Technical check passed"):"")+(can("publish")&&done&&!q.published?b("publish","Publish"):"")+`</div></div>`; }).join("");
+      return `<div class="card"><b>${esc(q.title)}</b><br><span class="muted" style="font-size:.9em">${esc(q.type)} &middot; by ${esc(q.by)}</span><br>${chk(q.usl,"Signs")}${chk(q.doctrine,"Doctrine")}${chk(q.tech,"Technical")}${q.published?'<span class="badge ok">Published (demo)</span>':""}${q.flag?`<br><span class="badge">${esc(q.flag)}</span>`:""}<div>`+
+      (can("review_usl")&&!q.usl?b("usl","Confirm signs are accurate"):"")+(can("review_doctrine")&&!q.doctrine?b("doctrine","Confirm doctrine is correct"):"")+(can("tech_check")&&!q.tech?b("tech","Technical check passed"):"")+((can("review_usl")||can("review_doctrine"))&&!q.published?b("changes","Request changes"):"")+(can("publish")&&done&&!q.published?b("publish","Publish"):"")+`</div></div>`; }).join("");
   if(t==="submit") return `<p class="muted">Add a signed video link and the words for readers. It goes to the review queue.</p>
     <input type="text" data-f="nTitle" placeholder="Title" value="${esc(S.nTitle)}" aria-label="Title" style="margin-bottom:10px">
-    <select data-f="nCat" aria-label="Category" style="width:100%;padding:14px;border:2px solid var(--line);border-radius:12px;font:inherit;background:var(--card);color:var(--ink);margin-bottom:10px">`+["Prayers","Scripture","Mass","Sacraments","Dictionary"].map(x=>`<option ${S.nCat===x?"selected":""}>${x}</option>`).join("")+`</select>
+    <select data-f="nCat" aria-label="Category" style="width:100%;padding:14px;border:2px solid var(--line);border-radius:12px;font:inherit;background:var(--card);color:var(--ink);margin-bottom:10px">`+["Prayers","Scripture","Mass","Sacraments","Catechesis","Dictionary"].map(x=>`<option ${S.nCat===x?"selected":""}>${x}</option>`).join("")+`</select>
     <input type="text" data-f="nEn" placeholder="Words for readers: English" value="${esc(S.nEn)}" aria-label="English words" style="margin-bottom:10px">
     <input type="text" data-f="nLg" placeholder="Words for readers: Luganda (optional)" value="${esc(S.nLg)}" aria-label="Luganda words" style="margin-bottom:10px">
     <button class="btn" data-submit="1">Send for review</button>`+(S.msg?`<p class="muted" role="status" style="margin-top:10px">${esc(S.msg)}</p>`:"");
-  if(t==="teach") return '<p class="muted">Pick lessons for a class. Only approved content should be used in class once review is complete.</p>'+
+  if(t==="teach") return '<p class="muted">Pick lessons for a class. Use only approved content in class once review is complete.</p>'+
     C.items.map(i=>`<button class="opt ${S.pack.includes(i.id)?"sel":""}" data-pack="${i.id}">${esc(i.title)} ${S.pack.includes(i.id)?"(in pack)":""}</button>`).join("")+`<p><b>${S.pack.length}</b> lessons in your class pack.</p>`+
     (S.pack.length?`<a class="btn gold" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent("Class pack from Catholic USL: "+S.pack.map(id=>C.items.find(x=>x.id===id).title).join(", ")+". "+SITE)}">Share pack on WhatsApp</a>`:"");
-  if(t==="reports") return '<div class="notice">Sample numbers. Reports show totals only. No individual Deaf learner is identified.</div><div class="grid"><div class="card"><b style="font-size:1.6em">128</b><br>Learners</div><div class="card"><b style="font-size:1.6em">412</b><br>Lessons completed</div><div class="card"><b style="font-size:1.6em">9</b><br>Parishes</div><div class="card"><b style="font-size:1.6em">3</b><br>Dioceses</div></div>';
+  if(t==="feedback") return S.fb.length?'<p class="muted">Corrections and requests saved on this device (demo). In the live app these arrive in a shared inbox.</p>'+S.fb.map(f=>`<div class="card"><span class="badge ${f.type==="Correction"?"":"ok"}">${esc(f.type)}</span> <span class="muted" style="font-size:.85em">${esc(f.who)} &middot; ${esc(f.date)}</span><br><b>${esc(f.lessonTitle)}</b><p style="margin:4px 0 0">${esc(f.msg)}</p></div>`).join(""):'<p class="muted">No feedback yet. Send some from Profile, then Feedback.</p>';
+  if(t==="reports"){ const parishes=new Set(S.acts.map(a=>a.parish.toLowerCase())).size; const people=S.acts.reduce((s,a)=>s+a.n,0);
+    const reviewed=C.items.filter(i=>i.status==="approved"||i.status==="usl-reviewed").length+S.queue.filter(q=>q.published).length;
+    const m=(n,l)=>`<div class="card"><b style="font-size:1.6em">${n}</b><br>${l}</div>`;
+    return '<div class="notice">Totals only. Figures come from what is logged on this device in the demo. The live app will use a shared, access-controlled database.</div><div class="grid">'+m(S.acts.length,"Pilot activities")+m(people,"Participants")+m(parishes,"Participating parishes")+m(reviewed,"Reviewed lessons")+m(S.fb.length,"Feedback received")+m(S.progress.length,"Lessons completed here")+'</div>'+
+    `<h2>Log a pilot activity</h2><select data-f="nAct" aria-label="Activity type" style="width:100%;padding:14px;border:2px solid var(--line);border-radius:12px;font:inherit;background:var(--card);color:var(--ink);margin-bottom:10px">`+["Training","Parish visit","Feedback session","Content review","Other"].map(x=>`<option ${S.nAct===x?"selected":""}>${x}</option>`).join("")+`</select>
+    <input type="text" data-f="nParish" placeholder="Parish or group" value="${esc(S.nParish)}" aria-label="Parish or group" style="margin-bottom:10px"><input type="text" inputmode="numeric" data-f="nCount" placeholder="Number of participants" value="${esc(S.nCount)}" aria-label="Participants" style="margin-bottom:10px">
+    <button class="btn" data-addact="1">Log activity</button>`+(S.msg?`<p class="muted" role="status" style="margin-top:10px">${esc(S.msg)}</p>`:"")+
+    (S.acts.length?'<h2>Recent activities</h2>'+S.acts.slice(0,8).map(a=>`<div class="toggle"><span><b>${esc(a.type)}</b><br><span class="muted" style="font-size:.9em">${esc(a.parish)} &middot; ${a.n} people</span></span><span class="muted">${esc(a.date)}</span></div>`).join(""):""); }
   if(t==="share") return `<p>Help your parishes and members find Catholic USL.</p><a class="btn gold" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent("Catholic USL: Catholic prayers and teaching in Ugandan Sign Language. "+SITE)}">Share on WhatsApp</a><button class="btn ghost" style="margin-top:10px" data-copy="1">Copy link</button>`;
   if(t==="users") return '<p class="muted">Roles are assigned by an administrator. Every change is written to the audit log.</p>'+C.roles.map(r=>`<div class="card"><b>${esc(r.name)}</b> <span class="badge ${r.level==="Super admin"?"":"ok"}">${esc(r.level)}</span><p class="muted" style="margin:6px 0">${esc(r.desc)}</p><span style="font-size:.85em">${r.perms.map(p=>C.permLabels[p]).join("; ")}</span></div>`).join("")+'<button class="btn ghost" data-invite="1">Invite a user (demo)</button>';
   if(t==="audit") return S.audit.length?S.audit.map(a=>`<div class="toggle"><span><b>${esc(a.who)}</b><br><span class="muted" style="font-size:.9em">${esc(a.m)}</span></span><span class="muted">${esc(a.t)}</span></div>`).join(""):'<p class="muted">No actions yet. Actions you take in this demo appear here.</p>';
@@ -416,33 +522,44 @@ const shareUrl = c => SITE + "#" + c.id;
 const waLink = c => "https://wa.me/?text=" + encodeURIComponent("\u{1F64F} " + c.title + "\n\n" + c.need + "\n\nGoal: " + fmt(c.target) + "\nSee it here: " + shareUrl(c) + "\n\n#CatholicUSL");
 const getAmt = () => S.other ? (parseInt(String(S.other).replace(/\D/g,""),10)||0) : (S.amount||0);
 function drawQR(){ const el=document.getElementById("qr"); if(!el) return; try{ if(window.QRCode){ el.innerHTML=""; new QRCode(el,{text:shareUrl(cur()),width:176,height:176,colorDark:"#02205A",colorLight:"#ffffff"}); } else { el.textContent=shareUrl(cur()); } }catch(e){ el.textContent=shareUrl(cur()); } }
-function render(){ $app.innerHTML = screens[S.screen](); if(S.screen==="campaignDetail") drawQR(); }
+function render(){ $app.innerHTML = (navigator.onLine===false?'<div class="notice" style="margin:0;border-radius:0;text-align:center" role="status">You are offline. Saved lesson text still works. Videos need internet.</div>':"") + screens[S.screen](); if(S.screen==="campaignDetail") drawQR(); }
 
 document.addEventListener("click",e=>{
   const t=e.target.closest("button"); if(!t) return; const d=t.dataset;
   if(d.go){ if(d.go==="library"){S.q="";} return go(d.go); }
   if(d.lang){ S.lang=d.lang; return render(); }
-  if(d.tile){ if(d.to==="library"){ S.cat={Prayers:"Prayers",Scripture:"Scripture",Mass:"Mass",Sacraments:"Sacraments"}[d.tile]||"All"; S.q=""; } return go(d.to); }
+  if(d.tile){ if(d.to==="library"){ S.cat={Prayers:"Prayers",Scripture:"Scripture",Mass:"Mass",Sacraments:"Sacraments",Catechesis:"Catechesis"}[d.tile]||"All"; S.q=""; } return go(d.to); }
   if(d.cat){ S.cat=d.cat; return render(); }
   if(d.item) return go("item",{item:d.item});
   if(d.fav){ S.fav=S.fav.includes(d.fav)?S.fav.filter(x=>x!==d.fav):[...S.fav,d.fav]; save(); return render(); }
   if(d.done){ S.progress=S.progress.includes(d.done)?S.progress.filter(x=>x!==d.done):[...S.progress,d.done]; save(); return render(); }
-  if(d.pick){ S.picked=+d.pick; if(S.picked===C.quiz[S.quizI].c) S.quizScore++; return render(); }
-  if(d.next){ S.picked=null; if(S.quizI+1<C.quiz.length) S.quizI++; else S.quizDone=true; return render(); }
-  if(d.restart){ Object.assign(S,{quizI:0,quizScore:0,picked:null,quizDone:false}); return render(); }
-  if(d.pref){ if(d.pref==="text") S.textSize=S.textSize==="large"?"normal":"large"; else S.contrast=S.contrast==="high"?"normal":"high"; save(); applyPrefs(); return render(); }
+  if(d.pref){ if(d.pref==="text") S.textSize=S.textSize==="large"?"normal":"large"; else if(d.pref==="low") S.lowData=!S.lowData; else S.contrast=S.contrast==="high"?"normal":"high"; save(); applyPrefs(); return render(); }
   if(d.role){ S.role=d.role; S.atab=""; return render(); }
   if(d.tl){ S.tlang=d.tl; return render(); }
   if(d.atab){ S.atab=d.atab; S.msg=""; return render(); }
-  if(d.qa){ const [id,k]=d.qa.split(":"); const q=S.queue.find(x=>x.id===id);
+  if(d.qa){ const [id,k]=d.qa.split(":"); const q=S.queue.find(x=>x.id===id); if(!q) return;
+    if(k==="changes"){ if(can("review_usl")||can("review_doctrine")){ q.flag="Changes requested by "+role().name; q.usl=false; q.doctrine=false; q.published=false; logA("Requested changes: "+q.title); } return render(); }
     const need={usl:"review_usl",doctrine:"review_doctrine",tech:"tech_check",publish:"publish"}[k];
-    if(q&&can(need)){ if(k==="publish"){ if(q.usl&&q.doctrine&&q.tech) q.published=true; } else q[k]=true; logA({usl:"Confirmed signs accurate: ",doctrine:"Confirmed doctrine correct: ",tech:"Technical check passed: ",publish:"Published (demo): "}[k]+q.title); }
+    if(can(need)){ if(k==="publish"){ if(q.usl&&q.doctrine&&q.tech) q.published=true; } else { q[k]=true; q.flag=""; } logA({usl:"Confirmed signs accurate: ",doctrine:"Confirmed doctrine correct: ",tech:"Technical check passed: ",publish:"Published (demo): "}[k]+q.title); }
     return render(); }
   if(d.pack){ S.pack=S.pack.includes(d.pack)?S.pack.filter(x=>x!==d.pack):[...S.pack,d.pack]; return render(); }
   if(d.submit){ if(!can("submit")) return; if(!S.nTitle.trim()||!S.nEn.trim()){ S.msg="Add a title and the English words."; return render(); }
     S.queue.unshift({id:"q"+Date.now(),title:S.nTitle.trim(),type:S.nCat+(S.nLg.trim()?" (English + Luganda)":" (English)"),by:role().name,usl:false,doctrine:false,tech:false,published:false}); logA("Submitted for review: "+S.nTitle.trim());
     S.nTitle="";S.nEn="";S.nLg=""; S.msg="Sent for review (demo). It now appears in the review queue."; return render(); }
   if(d.invite){ logA("Invited a user (demo)"); S.msg=""; return render(); }
+  if(d.quiz){ const id=d.quiz; const Q=id==="general"?C.quiz:C.items.find(x=>x.id===id).quiz; Object.assign(S,{qz:Q,qFor:id==="general"?null:id,quizI:0,quizScore:0,picked:null,quizDone:false}); if(S.qFor) S.item=S.qFor; return go("quiz"); }
+  if(d.pick){ const Q=S.qz||C.quiz; S.picked=+d.pick; if(S.picked===Q[S.quizI].c) S.quizScore++; return render(); }
+  if(d.next){ const Q=S.qz||C.quiz; S.picked=null; if(S.quizI+1<Q.length) S.quizI++; else { S.quizDone=true; if(S.qFor){ const prev=(S.scores[S.qFor]||{}).best||0; S.scores[S.qFor]={best:Math.max(prev,S.quizScore),total:Q.length}; if(S.quizScore/Q.length>=0.6 && !S.progress.includes(S.qFor)) S.progress.push(S.qFor); save(); } } return render(); }
+  if(d.loadv){ S.loaded[d.loadv]=true; return render(); }
+  if(d.fbt){ S.fbType=d.fbt; return render(); }
+  if(d.fbfor){ S.fbLesson=d.fbfor; S.fbType="Correction"; S.fbSaved=null; return go("feedback"); }
+  if(d.fbnew){ S.fbSaved=null; S.fbMsg=""; return render(); }
+  if(d.fbsave){ if(!S.fbMsg.trim()){ S.err="Please write a short message."; return render(); } S.err="";
+    const it=C.items.find(x=>x.id===S.fbLesson); const f={type:S.fbType,who:S.fbWho,lesson:S.fbLesson,lessonTitle:it?it.title:"General or new content",msg:S.fbMsg.trim(),date:new Date().toLocaleDateString()};
+    S.fb.unshift(f); S.fbSaved=f; S.fbMsg=""; save(); return render(); }
+  if(d.addact){ if(!can("reports")) return; const n=parseInt(String(S.nCount).replace(/\D/g,""),10)||0; if(!S.nParish.trim()){ S.msg="Add the parish or group."; return render(); }
+    S.acts.unshift({type:S.nAct,parish:S.nParish.trim(),n,date:new Date().toLocaleDateString()}); logA("Logged activity: "+S.nAct+" at "+S.nParish.trim()); S.nParish="";S.nCount="";S.msg="Activity logged."; save(); return render(); }
+  if(d.wipe){ try{ localStorage.removeItem("cusl"); }catch(e){} Object.assign(S,{fav:[],progress:[],scores:{},fb:[],acts:[],lowData:false,textSize:"normal",contrast:"normal"}); applyPrefs(); return go("profile"); }
   if(d.camp) return go("campaignDetail",{camp:d.camp,err:""});
   if(d.donate) return go("donate",{step:1,amount:null,other:"",phone:"",name:"",consent:false,err:"",comment:"",posted:false});
   if(d.amt){ S.amount=+d.amt; S.other=""; S.err=""; return render(); }
@@ -454,13 +571,15 @@ document.addEventListener("click",e=>{
   if(d.finish){ const c=cur(), a=getAmt(); c.raised+=a; c.count++; c.supporters.unshift({name:(S.consent&&S.name.trim())?S.name.trim():"Anonymous",amt:a,ago:"just now (demo)"}); S.lastAmt=a; S.step=4; S.posted=false; window.scrollTo(0,0); return render(); }
   if(d.postc){ const tx=S.comment.trim(); if(tx){ cur().comments.unshift({name:(S.consent&&S.name.trim())?S.name.trim():"Anonymous",text:tx}); S.posted=true; S.comment=""; } return render(); }
   if(d.copy){ try{ navigator.clipboard.writeText(S.screen==="admin"?SITE:shareUrl(cur())); t.textContent="Link copied"; }catch(e){ t.textContent=shareUrl(cur()); } return; }
-  if(t.id==="sendfb"){ document.getElementById("fbmsg").textContent="Thank you. In the live app this will reach the review team."; }
 });
 document.addEventListener("input",e=>{
   const f=e.target.dataset&&e.target.dataset.f; if(f){ S[f]=e.target.value; if(f==="other") S.amount=null; return; }
   if(e.target.id==="q"){ S.q=e.target.value; const p=e.target.selectionStart; render(); const n=document.getElementById("q"); n.focus(); n.setSelectionRange(p,p); }
   if(e.target.id==="dq"){ S.dq=e.target.value; const p=e.target.selectionStart; render(); const n=document.getElementById("dq"); n.focus(); n.setSelectionRange(p,p); }
 });
+window.addEventListener&&window.addEventListener("online",render);
+window.addEventListener&&window.addEventListener("offline",render);
+try{ if("serviceWorker" in navigator && location.protocol.indexOf("http")===0 && location.hostname.indexOf("claude")<0) navigator.serviceWorker.register("sw.js"); }catch(e){}
 render();
 </script>
 </body>
