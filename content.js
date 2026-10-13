@@ -1,6 +1,7 @@
 // CATHOLIC USL - CONTENT FILE
 // To add a real sign video: upload the MP4 into the "videos" folder on GitHub,
 // then change   video: null   to   video: "videos/our-father.mp4"
+// For a YouTube video use   youtube: "VIDEO_ID"   (the part after youtu.be/ and before ?si=)
 // Status values: "placeholder" (no real review yet) | "usl-reviewed" | "approved"
 // Nothing here is approved doctrine until the review team signs it off.
 
@@ -18,6 +19,18 @@ window.CONTENT = {
     { id: "glory-be", cat: "Prayers", title: "Glory Be", status: "placeholder", video: null,
       desc: "A short prayer of praise to the Trinity.",
       text: "Glory be to the Father, and to the Son, and to the Holy Spirit, as it was in the beginning, is now, and ever shall be, world without end. Amen." },
+    { id: "deaf-man-1", cat: "Scripture", title: "Jesus and the deaf man (part 1)", status: "placeholder", video: null, youtube: "wBSqKKqNKO4",
+      credit: "Ugandan Sign Language Bible © 2013 DOOR International, licensed CC BY-SA 4.0. Embedded from YouTube, unchanged.",
+      desc: "Jesus heals a man who could not hear (see Mark 7:31-37, reference to be confirmed).",
+      text: "Sample summary for the prototype: people bring a deaf man to Jesus and ask Him to help. Jesus heals him. The signed video shows the story in Ugandan Sign Language." },
+    { id: "deaf-man-2", cat: "Scripture", title: "Jesus and the deaf man (part 2)", status: "placeholder", video: null, youtube: "HnK7EPL_ppg",
+      credit: "Ugandan Sign Language Bible © 2013 DOOR International, licensed CC BY-SA 4.0. Embedded from YouTube, unchanged.",
+      desc: "The second video on the same story.",
+      text: "Sample summary for the prototype: this video continues the story of Jesus and the deaf man. Text to be replaced by the approved Bible translation once the review team confirms it." },
+    { id: "ten-commandments", cat: "Scripture", title: "The Ten Commandments", status: "placeholder", video: null, youtube: "Ow3-NVYBifY",
+      credit: "Ugandan Sign Language Bible © 2013 DOOR International, licensed CC BY-SA 4.0. Embedded from YouTube, unchanged.",
+      desc: "God gives the Ten Commandments to Moses (see Exodus 20, reference to be confirmed).",
+      text: "Sample summary for the prototype: God gave the Ten Commandments to Moses to teach His people how to love God and love one another. Catholic catechesis numbers and words the commandments in a specific way, so a reviewer must check this lesson before publication." },
     { id: "gospel-sample", cat: "Scripture", title: "Sunday Gospel: sample entry", status: "placeholder", video: null,
       desc: "Matthew 22:1-14 (28th Sunday in Ordinary Time, Year A)",
       text: "Sample entry only. The approved Bible translation text, the USL video and a short explanation will be added here once the licence and the review team are confirmed." },

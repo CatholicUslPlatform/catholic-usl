@@ -79,6 +79,7 @@ input[type=search],input[type=text]{width:100%;padding:14px;border:2px solid var
 // CATHOLIC USL - CONTENT FILE
 // To add a real sign video: upload the MP4 into the "videos" folder on GitHub,
 // then change   video: null   to   video: "videos/our-father.mp4"
+// For a YouTube video use   youtube: "VIDEO_ID"   (the part after youtu.be/ and before ?si=)
 // Status values: "placeholder" (no real review yet) | "usl-reviewed" | "approved"
 // Nothing here is approved doctrine until the review team signs it off.
 
@@ -96,6 +97,18 @@ window.CONTENT = {
     { id: "glory-be", cat: "Prayers", title: "Glory Be", status: "placeholder", video: null,
       desc: "A short prayer of praise to the Trinity.",
       text: "Glory be to the Father, and to the Son, and to the Holy Spirit, as it was in the beginning, is now, and ever shall be, world without end. Amen." },
+    { id: "deaf-man-1", cat: "Scripture", title: "Jesus and the deaf man (part 1)", status: "placeholder", video: null, youtube: "wBSqKKqNKO4",
+      credit: "Ugandan Sign Language Bible © 2013 DOOR International, licensed CC BY-SA 4.0. Embedded from YouTube, unchanged.",
+      desc: "Jesus heals a man who could not hear (see Mark 7:31-37, reference to be confirmed).",
+      text: "Sample summary for the prototype: people bring a deaf man to Jesus and ask Him to help. Jesus heals him. The signed video shows the story in Ugandan Sign Language." },
+    { id: "deaf-man-2", cat: "Scripture", title: "Jesus and the deaf man (part 2)", status: "placeholder", video: null, youtube: "HnK7EPL_ppg",
+      credit: "Ugandan Sign Language Bible © 2013 DOOR International, licensed CC BY-SA 4.0. Embedded from YouTube, unchanged.",
+      desc: "The second video on the same story.",
+      text: "Sample summary for the prototype: this video continues the story of Jesus and the deaf man. Text to be replaced by the approved Bible translation once the review team confirms it." },
+    { id: "ten-commandments", cat: "Scripture", title: "The Ten Commandments", status: "placeholder", video: null, youtube: "Ow3-NVYBifY",
+      credit: "Ugandan Sign Language Bible © 2013 DOOR International, licensed CC BY-SA 4.0. Embedded from YouTube, unchanged.",
+      desc: "God gives the Ten Commandments to Moses (see Exodus 20, reference to be confirmed).",
+      text: "Sample summary for the prototype: God gave the Ten Commandments to Moses to teach His people how to love God and love one another. Catholic catechesis numbers and words the commandments in a specific way, so a reviewer must check this lesson before publication." },
     { id: "gospel-sample", cat: "Scripture", title: "Sunday Gospel: sample entry", status: "placeholder", video: null,
       desc: "Matthew 22:1-14 (28th Sunday in Ordinary Time, Year A)",
       text: "Sample entry only. The approved Bible translation text, the USL video and a short explanation will be added here once the licence and the review team are confirmed." },
@@ -167,9 +180,12 @@ function nav(){
 const hdr = (title, back="home") => `<div class="topbar"><button class="back" data-go="${back}" aria-label="Back">&#8592;</button><h1 style="margin:0">${esc(title)}</h1></div>`;
 
 function videoBox(it){
+  if(it.youtube) return `<div class="player" style="padding:0"><iframe src="https://www.youtube-nocookie.com/embed/${esc(it.youtube)}" title="${esc(it.title)}" style="width:100%;height:100%;border:0" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+    <p style="font-size:.9em"><a href="https://www.youtube.com/watch?v=${esc(it.youtube)}" target="_blank" rel="noopener" style="color:var(--navy2);font-weight:700">Watch on YouTube</a></p>`;
   if(it.video) return `<div class="player"><video controls playsinline preload="metadata" src="${esc(it.video)}" onerror="this.parentNode.innerHTML='<div>Video file not found.<br>Check the file name in content.js and the videos folder.</div>'"></video></div>`;
   return `<div class="player"><div><div style="font-size:2.2em;line-height:1">&#9654;</div><p style="margin:8px 0 0"><b>Sign video placeholder</b><br><span style="opacity:.8;font-size:.9em">A reviewed USL video will appear here.</span></p></div></div>`;
 }
+const creditLine = it => it.credit ? `<p class="muted" style="font-size:.85em">${esc(it.credit)} <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener" style="color:var(--navy2)">Licence</a></p>` : "";
 
 const screens = {
   welcome(){ return `<div class="splash fade"><img src="logo.png" alt="Catholic USL logo: hands signing around a cross above an open Bible">
@@ -194,7 +210,7 @@ const screens = {
     (list.length?list.map(i=>`<button class="card" data-item="${i.id}"><div class="row"><div class="thumb">${I.play}</div><div><b>${esc(i.title)}</b><br><span class="muted" style="font-size:.9em">${esc(i.desc)}</span><br>${statusBadge(i.status)}</div></div></button>`).join(""):'<p class="muted">Nothing found. Try a different word or choose All.</p>')+`</div>`+nav(); },
 
   item(){ const i=C.items.find(x=>x.id===S.item); const f=S.fav.includes(i.id), d=S.progress.includes(i.id);
-    return `<div class="screen fade">${hdr(i.title,"library")}${videoBox(i)}${statusBadge(i.status)}
+    return `<div class="screen fade">${hdr(i.title,"library")}${videoBox(i)}${creditLine(i)}${statusBadge(i.status)}
     <h2>Read the text</h2><p>${esc(i.text)}</p>
     <div class="row" style="margin-top:12px"><button class="btn ghost" data-fav="${i.id}">${f?"Saved":"Save"}</button><button class="btn ${d?"ghost":""}" data-done="${i.id}">${d?"Completed":"Mark as learned"}</button></div>
     <div class="notice">Found a mistake in the sign or the text? <button class="btn small ghost" data-go="feedback" style="margin-left:6px">Report a problem</button></div></div>`+nav(); },
