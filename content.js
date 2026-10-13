@@ -2,6 +2,7 @@
 // To add a real sign video: upload the MP4 into the "videos" folder on GitHub,
 // then change   video: null   to   video: "videos/our-father.mp4"
 // For a YouTube video use   youtube: "VIDEO_ID"   (the part after youtu.be/ and before ?si=)
+// Words for readers: add   translations: { Luganda: "...", Kiswahili: "..." }   to any item (English uses "text").
 // Status values: "placeholder" (no real review yet) | "usl-reviewed" | "approved"
 // Nothing here is approved doctrine until the review team signs it off.
 
@@ -87,3 +88,40 @@ window.CONTENT = {
       comments: [] }
   ]
 };
+
+// ROLES (demo). In the live app an administrator assigns roles after sign-in; users never choose their own.
+// Content approval stays separate from money: no role below can approve donations or finance.
+window.CONTENT.permLabels = {
+  browse:"Browse and watch content", save:"Save favourites", progress:"Track progress", feedback:"Send feedback",
+  teach:"Prepare lessons and class packs", submit:"Submit videos, translations and dictionary entries",
+  review_usl:"Confirm sign-language accuracy", review_doctrine:"Confirm doctrine and prayers",
+  reports:"View aggregated reports", distribute:"Share and distribute resources",
+  tech_check:"Run technical checks", publish:"Publish approved content",
+  manage_users:"Manage users and roles", audit:"View the audit log"
+};
+window.CONTENT.roles = [
+  { id:"deaf_catholic", name:"Deaf Catholic", level:"User", group:"Primary beneficiaries",
+    desc:"Learn, pray and follow the Mass in USL, with words alongside.",
+    perms:["browse","save","progress","feedback"] },
+  { id:"learner", name:"Catholic school or Deaf learner", level:"User", group:"Faith education",
+    desc:"Use lessons and quizzes set by teachers and catechists.",
+    perms:["browse","save","progress","feedback"] },
+  { id:"clergy", name:"Priest or catechist", level:"Moderate admin", group:"Parish teaching",
+    desc:"Teach with approved materials and confirm that doctrine and prayers are correct.",
+    perms:["browse","save","progress","feedback","teach","review_doctrine"] },
+  { id:"usl_specialist", name:"USL interpreter or Deaf instructor", level:"Moderate admin", group:"Content creation",
+    desc:"Create signed content and written translations, and confirm sign accuracy.",
+    perms:["browse","save","progress","feedback","submit","review_usl"] },
+  { id:"partner", name:"Diocesan leader or Deaf association", level:"Partner", group:"Partnerships",
+    desc:"See aggregated reach and share the app through dioceses and associations.",
+    perms:["browse","save","feedback","reports","distribute"] },
+  { id:"dev", name:"Development team", level:"Super admin", group:"Platform",
+    desc:"Runs the platform, users, roles and technical checks. Cannot confirm doctrine or signs.",
+    perms:["browse","feedback","tech_check","publish","manage_users","audit","reports"] }
+];
+// SAMPLE review queue
+window.CONTENT.queue = [
+  { id:"q1", title:"Our Father (USL video)", type:"Prayer video", by:"Sample contributor", usl:false, doctrine:false, tech:false, published:false },
+  { id:"q2", title:"Hail Mary (USL video)", type:"Prayer video", by:"Sample contributor", usl:true, doctrine:false, tech:true, published:false },
+  { id:"q3", title:"Dictionary: Church, Prayer, Peace", type:"Dictionary entries", by:"Sample contributor", usl:true, doctrine:true, tech:true, published:false }
+];
