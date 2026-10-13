@@ -58,9 +58,32 @@ window.CONTENT = {
     { q: "Which prayer did Jesus teach His disciples?", a: ["Hail Mary", "Glory Be", "Our Father"], c: 2 },
     { q: "Which part of the Mass includes the Gospel reading?", a: ["Liturgy of the Word", "Concluding Rites", "Introductory Rites"], c: 0 }
   ],
-  // Demonstration only. No real money is ever handled in the prototype.
+  // DEMONSTRATION ONLY. All names, figures and comments below are SAMPLES.
+  // No real money is ever handled. Replace with real, approved data before any real campaign.
   campaigns: [
-    { id: "c1", title: "USL video production", need: "Record and review signed prayers and Gospel readings", target: 5000000, raised: 1200000 },
-    { id: "c2", title: "Catechist training", need: "Train catechists to teach with Deaf learners", target: 3000000, raised: 450000 }
+    { id: "c1", title: "USL video production",
+      by: "Catholic USL project team (sample)",
+      need: "Record and review signed prayers and Gospel readings",
+      problem: "Many Deaf Catholics in Uganda cannot follow prayers and teaching in a language they understand. Real figures will be added from UNAD or national data once confirmed. We will not invent numbers.",
+      builds: ["10 signed prayers recorded by Deaf Catholics", "Review by Deaf USL users and a Catholic reviewer", "Free videos for parishes and families"],
+      who: ["Deaf Catholics and Deaf youth", "Catechists and parishes", "Families of Deaf people"],
+      responsible: "To be agreed before launch: the legal recipient of funds, the account owner and the reporting plan.",
+      target: 5000000, raised: 1200000, count: 7,
+      supporters: [
+        { name: "Sample supporter", amt: 10000, ago: "2 days ago" },
+        { name: "Anonymous", amt: 5000, ago: "3 days ago" },
+        { name: "Sample parish group", amt: 50000, ago: "5 days ago" }
+      ],
+      comments: [ { name: "Sample supporter", text: "Every Deaf Catholic should be able to pray in their own language." } ] },
+    { id: "c2", title: "Catechist training",
+      by: "Catholic USL project team (sample)",
+      need: "Train catechists to teach with Deaf learners",
+      problem: "Few catechists know Ugandan Sign Language. Real figures will be added once confirmed.",
+      builds: ["A short training for catechists", "Basic USL for the Mass and prayers", "Teaching materials for classes"],
+      who: ["Catechists", "Deaf learners in parishes"],
+      responsible: "To be agreed before launch: the legal recipient of funds, the account owner and the reporting plan.",
+      target: 3000000, raised: 450000, count: 3,
+      supporters: [ { name: "Anonymous", amt: 20000, ago: "1 week ago" } ],
+      comments: [] }
   ]
 };
