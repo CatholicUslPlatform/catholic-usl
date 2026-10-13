@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Catholic USL</title>
+<meta name="theme-color" content="#02205A">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#02205A; --navy2:#0A3280; --gold:#FDC53E; --green:#1FA84F;
+  --bg:#F4F6FB; --card:#FFFFFF; --ink:#0E1B3D; --muted:#53607E; --line:#D9DFEE;
+  --fs:17px;
+}
+:root[data-contrast="high"]{ --bg:#fff; --ink:#000; --muted:#222; --line:#000; --card:#fff; }
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:var(--fs);color:var(--ink);background:var(--bg);
+  padding-top:env(safe-area-inset-top,0px)}
+#app{max-width:480px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;position:relative}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.screen{flex:1;padding:16px 16px 96px}
+.splash{background:var(--navy);color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;gap:18px}
+.splash img{width:min(78%,320px);height:auto}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:16px;font-weight:700;font-size:1.05em;background:var(--navy2);color:#fff;text-align:center}
+.btn.gold{background:var(--gold);color:var(--navy)}
+.btn.ghost{background:transparent;color:var(--navy2);border:2px solid var(--navy2)}
+.btn.small{width:auto;display:inline-block;padding:10px 16px}
+h1{font-size:1.5em;margin:4px 0 6px;color:var(--navy)}
+h2{font-size:1.15em;margin:20px 0 8px;color:var(--navy)}
+p{line-height:1.5;margin:0 0 10px}
+.muted{color:var(--muted)}
+.topbar{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.back{border:0;background:var(--card);border:2px solid var(--line);border-radius:12px;width:44px;height:44px;font-size:1.3em;color:var(--navy)}
+.hero{background:var(--navy);color:#fff;border-radius:18px;padding:18px;margin:6px 0 16px;position:relative;overflow:hidden}
+.hero h1{color:#fff;margin:0 0 6px}
+.hero .sun{position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;border:10px solid var(--gold);opacity:.9}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:16px 10px;text-align:center;font-weight:700;color:var(--navy);min-height:92px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.tile svg{width:30px;height:30px;stroke:var(--navy2);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.card{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;width:100%;text-align:left;color:var(--ink);display:block}
+.row{display:flex;gap:12px;align-items:center}
+.thumb{width:64px;height:64px;border-radius:12px;background:var(--navy);display:flex;align-items:center;justify-content:center;flex:none}
+.thumb svg{width:26px;height:26px;fill:var(--gold)}
+.badge{display:inline-block;font-size:.78em;font-weight:700;padding:3px 9px;border-radius:999px;background:#FFF1CC;color:#6B4B00;border:1px solid #E9C45A}
+.badge.ok{background:#DDF3E5;color:#0E5A2A;border-color:#8AD0A3}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px}
+.chip{flex:none;border:2px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;color:var(--navy);font-weight:700}
+.chip.on{background:var(--navy2);color:#fff;border-color:var(--navy2)}
+input[type=search],input[type=text]{width:100%;padding:14px;border:2px solid var(--line);border-radius:12px;font:inherit;background:var(--card);color:var(--ink)}
+.player{background:var(--navy);border-radius:16px;overflow:hidden;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;color:#fff;text-align:center;padding:14px;margin-bottom:12px}
+.player video{width:100%;height:100%;background:#000}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--card);border-top:2px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom,0px)}
+.nav button{flex:1;border:0;background:none;padding:10px 4px;color:var(--muted);font-weight:700;font-size:.8em;display:flex;flex-direction:column;align-items:center;gap:3px}
+.nav button svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav button.on{color:var(--navy2)}
+.opt{display:flex;align-items:center;gap:12px;width:100%;padding:14px;border:2px solid var(--line);background:var(--card);border-radius:14px;margin-bottom:10px;text-align:left;font-weight:700;color:var(--ink)}
+.opt.sel{border-color:var(--navy2);background:#E8EEFB}
+.opt.good{border-color:var(--green);background:#DDF3E5}
+.opt.bad{border-color:#C0392B;background:#FBE3E0}
+.opt[disabled]{opacity:.55}
+.bar{height:12px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--green)}
+.notice{background:#FFF8E1;border:2px solid #E9C45A;border-radius:14px;padding:12px;font-size:.92em;margin:12px 0}
+.toggle{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
+.sign{aspect-ratio:1;background:var(--navy);border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.8em;text-align:center;padding:8px}
+@media (prefers-reduced-motion:no-preference){ .fade{animation:f .25s ease-out} @keyframes f{from{opacity:0}to{opacity:1}} }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>/* built-in default content; content.js (if present) overrides it */
+// CATHOLIC USL - CONTENT FILE
+// To add a real sign video: upload the MP4 into the "videos" folder on GitHub,
+// then change   video: null   to   video: "videos/our-father.mp4"
+// Status values: "placeholder" (no real review yet) | "usl-reviewed" | "approved"
+// Nothing here is approved doctrine until the review team signs it off.
+
+window.CONTENT = {
+  items: [
+    { id: "sign-of-cross", cat: "Prayers", title: "Sign of the Cross", status: "placeholder", video: null,
+      desc: "The prayer that begins and ends our prayer.",
+      text: "In the name of the Father, and of the Son, and of the Holy Spirit. Amen." },
+    { id: "our-father", cat: "Prayers", title: "Our Father", status: "placeholder", video: null,
+      desc: "The prayer Jesus taught His disciples.",
+      text: "Our Father, who art in heaven, hallowed be thy name; thy kingdom come; thy will be done on earth as it is in heaven. Give us this day our daily bread; and forgive us our trespasses as we forgive those who trespass against us; and lead us not into temptation, but deliver us from evil. Amen." },
+    { id: "hail-mary", cat: "Prayers", title: "Hail Mary", status: "placeholder", video: null,
+      desc: "A prayer to Mary, mother of Jesus.",
+      text: "Hail Mary, full of grace, the Lord is with thee. Blessed art thou amongst women, and blessed is the fruit of thy womb, Jesus. Holy Mary, Mother of God, pray for us sinners, now and at the hour of our death. Amen." },
+    { id: "glory-be", cat: "Prayers", title: "Glory Be", status: "placeholder", video: null,
+      desc: "A short prayer of praise to the Trinity.",
+      text: "Glory be to the Father, and to the Son, and to the Holy Spirit, as it was in the beginning, is now, and ever shall be, world without end. Amen." },
+    { id: "gospel-sample", cat: "Scripture", title: "Sunday Gospel: sample entry", status: "placeholder", video: null,
+      desc: "Matthew 22:1-14 (28th Sunday in Ordinary Time, Year A)",
+      text: "Sample entry only. The approved Bible translation text, the USL video and a short explanation will be added here once the licence and the review team are confirmed." },
+    { id: "mass-intro", cat: "Mass", title: "Parts of the Mass: overview", status: "placeholder", video: null,
+      desc: "Introductory Rites, Liturgy of the Word, Liturgy of the Eucharist, Concluding Rites.",
+      text: "The Mass has four main parts: the Introductory Rites, the Liturgy of the Word, the Liturgy of the Eucharist, and the Concluding Rites. Each lesson in this guide will be reviewed by a catechetical reviewer before publication." },
+    { id: "sacrament-intro", cat: "Sacraments", title: "The seven Sacraments", status: "placeholder", video: null,
+      desc: "A first overview for learners and families.",
+      text: "Baptism, Confirmation, Eucharist, Reconciliation, Anointing of the Sick, Holy Orders and Matrimony. Detailed preparation lessons will follow after review." }
+  ],
+  dictionary: [
+    { word: "God", note: "Sign pending Deaf and USL review" },
+    { word: "Jesus", note: "Sign pending Deaf and USL review" },
+    { word: "Church", note: "Sign pending Deaf and USL review" },
+    { word: "Prayer", note: "Sign pending Deaf and USL review" },
+    { word: "Peace", note: "Sign pending Deaf and USL review" },
+    { word: "Love", note: "Sign pending Deaf and USL review" },
+    { word: "Mass", note: "Sign pending Deaf and USL review" },
+    { word: "Bible", note: "Sign pending Deaf and USL review" },
+    { word: "Sin", note: "Terminology that needs careful review, not a literal translation" },
+    { word: "Forgiveness", note: "Terminology that needs careful review, not a literal translation" }
+  ],
+  quiz: [
+    { q: "How many Sacraments are there in the Catholic Church?", a: ["Five", "Seven", "Nine"], c: 1 },
+    { q: "Which prayer did Jesus teach His disciples?", a: ["Hail Mary", "Glory Be", "Our Father"], c: 2 },
+    { q: "Which part of the Mass includes the Gospel reading?", a: ["Liturgy of the Word", "Concluding Rites", "Introductory Rites"], c: 0 }
+  ],
+  // Demonstration only. No real money is ever handled in the prototype.
+  campaigns: [
+    { id: "c1", title: "USL video production", need: "Record and review signed prayers and Gospel readings", target: 5000000, raised: 1200000 },
+    { id: "c2", title: "Catechist training", need: "Train catechists to teach with Deaf learners", target: 3000000, raised: 450000 }
+  ]
+};
+</script>
+<script src="content.js"></script>
+<script>
+const C = window.CONTENT;
+const S = { screen:"welcome", lang:"English", cat:"All", q:"", item:null, fav:[], quizI:0, quizScore:0, picked:null, quizDone:false,
+            camp:null, amount:null, anon:false, donated:false, textSize:"normal", contrast:"normal", progress:[], dq:"" };
+try{ const sv=JSON.parse(localStorage.getItem("cusl")||"{}"); Object.assign(S,{fav:sv.fav||[],progress:sv.progress||[],textSize:sv.textSize||"normal",contrast:sv.contrast||"normal"}); }catch(e){}
+function save(){ try{ localStorage.setItem("cusl",JSON.stringify({fav:S.fav,progress:S.progress,textSize:S.textSize,contrast:S.contrast})); }catch(e){} }
+function applyPrefs(){ document.documentElement.style.setProperty("--fs",S.textSize==="large"?"20px":"17px"); document.documentElement.dataset.contrast=S.contrast; }
+applyPrefs();
+
+const I = {
+  home:'<svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>',
+  lib:'<svg viewBox="0 0 24 24"><path d="M4 5h6a2 2 0 012 2v13a2 2 0 00-2-2H4zM20 5h-6a2 2 0 00-2 2v13a2 2 0 012-2h6z"/></svg>',
+  search:'<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>',
+  user:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>',
+  hands:'<svg viewBox="0 0 24 24"><path d="M8 21v-8l-3-4M8 13V5M12 13V3M16 13V5M16 21v-8l3-3"/></svg>',
+  cross:'<svg viewBox="0 0 24 24"><path d="M12 3v18M6 9h12"/></svg>',
+  book:'<svg viewBox="0 0 24 24"><path d="M4 5h6a2 2 0 012 2v13a2 2 0 00-2-2H4zM20 5h-6a2 2 0 00-2 2v13a2 2 0 012-2h6z"/></svg>',
+  cup:'<svg viewBox="0 0 24 24"><path d="M7 4h10v5a5 5 0 01-10 0zM12 14v6M8 20h8"/></svg>',
+  water:'<svg viewBox="0 0 24 24"><path d="M12 3s6 6 6 11a6 6 0 01-12 0c0-5 6-11 6-11z"/></svg>',
+  star:'<svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.5 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/></svg>',
+  play:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>'
+};
+const $app = document.getElementById("app");
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const go = (screen, extra={}) => { Object.assign(S,{screen},extra); window.scrollTo(0,0); render(); };
+const fmt = n => "UGX " + n.toLocaleString("en-UG");
+const statusBadge = s => s==="approved" ? '<span class="badge ok">Approved</span>' : s==="usl-reviewed" ? '<span class="badge ok">USL reviewed</span>' : '<span class="badge">Sample, pending review</span>';
+
+function nav(){
+  const t=[["home","Home",I.home],["library","Library",I.lib],["dictionary","Dictionary",I.search],["profile","Profile",I.user]];
+  const cur = {item:"library",quiz:"home",mass:"home",donate:"profile",campaign:"profile",accessibility:"profile",about:"profile"}[S.screen]||S.screen;
+  return '<nav class="nav" aria-label="Main">'+t.map(([k,l,ic])=>`<button class="${cur===k?"on":""}" data-go="${k}" aria-label="${l}">${ic}<span>${l}</span></button>`).join("")+'</nav>';
+}
+const hdr = (title, back="home") => `<div class="topbar"><button class="back" data-go="${back}" aria-label="Back">&#8592;</button><h1 style="margin:0">${esc(title)}</h1></div>`;
+
+function videoBox(it){
+  if(it.video) return `<div class="player"><video controls playsinline preload="metadata" src="${esc(it.video)}" onerror="this.parentNode.innerHTML='<div>Video file not found.<br>Check the file name in content.js and the videos folder.</div>'"></video></div>`;
+  return `<div class="player"><div><div style="font-size:2.2em;line-height:1">&#9654;</div><p style="margin:8px 0 0"><b>Sign video placeholder</b><br><span style="opacity:.8;font-size:.9em">A reviewed USL video will appear here.</span></p></div></div>`;
+}
+
+const screens = {
+  welcome(){ return `<div class="splash fade"><img src="logo.png" alt="Catholic USL logo: hands signing around a cross above an open Bible">
+    <div class="muted" style="color:#C9D5F2;font-size:.95em">Prototype with sample content</div>
+    <button class="btn gold" data-go="language">Get started</button></div>`; },
+
+  language(){ const L=[["English",1],["Luganda",0],["Runyoro-Rutooro",0],["Kiswahili",0]];
+    return `<div class="screen fade">${hdr("Choose language","welcome")}<p class="muted">Text language for the app. Signing is always in Ugandan Sign Language.</p>`+
+    L.map(([n,ok])=>`<button class="opt ${S.lang===n?"sel":""}" ${ok?`data-lang="${n}"`:"disabled"}>${n}${ok?"":' <span class="badge" style="margin-left:auto">Coming soon</span>'}</button>`).join("")+
+    `<button class="btn" data-go="home" style="margin-top:12px">Continue</button></div>`; },
+
+  home(){ const T=[["Prayers","Prayers",I.hands,"library"],["Catechesis","Catechesis",I.book,"quiz"],["Scripture","Scripture & Gospel",I.cross,"library"],["Mass","Mass guide",I.cup,"library"],["Sacraments","Sacraments",I.water,"library"],["Dictionary","USL dictionary",I.search,"dictionary"]];
+    return `<div class="screen fade"><div class="hero"><div class="sun"></div><h1>Welcome</h1><p style="margin:0;max-width:75%">Catholic Faith, Clearly Communicated.</p></div>
+    <div class="grid">`+T.map(([k,l,ic,to])=>`<button class="tile" data-tile="${k}" data-to="${to}">${ic}<span>${l}</span></button>`).join("")+`</div>
+    <h2>Test yourself</h2><button class="card" data-go="quiz"><b>Short quiz</b><br><span class="muted">3 questions on prayers, Mass and Sacraments</span></button>
+    <div class="notice">This is a prototype. Content marked <b>sample</b> has not been reviewed by Deaf USL users or Church reviewers.</div></div>`+nav(); },
+
+  library(){ const cats=["All",...new Set(C.items.map(i=>i.cat))]; const q=S.q.toLowerCase();
+    const list=C.items.filter(i=>(S.cat==="All"||i.cat===S.cat)&&(!q||(i.title+i.desc).toLowerCase().includes(q)));
+    return `<div class="screen fade"><h1>Library</h1><input type="search" id="q" placeholder="Search prayers, Gospel, Mass" value="${esc(S.q)}" aria-label="Search library">
+    <div class="chips" role="tablist">`+cats.map(c=>`<button class="chip ${S.cat===c?"on":""}" data-cat="${c}">${c}</button>`).join("")+`</div>`+
+    (list.length?list.map(i=>`<button class="card" data-item="${i.id}"><div class="row"><div class="thumb">${I.play}</div><div><b>${esc(i.title)}</b><br><span class="muted" style="font-size:.9em">${esc(i.desc)}</span><br>${statusBadge(i.status)}</div></div></button>`).join(""):'<p class="muted">Nothing found. Try a different word or choose All.</p>')+`</div>`+nav(); },
+
+  item(){ const i=C.items.find(x=>x.id===S.item); const f=S.fav.includes(i.id), d=S.progress.includes(i.id);
+    return `<div class="screen fade">${hdr(i.title,"library")}${videoBox(i)}${statusBadge(i.status)}
+    <h2>Read the text</h2><p>${esc(i.text)}</p>
+    <div class="row" style="margin-top:12px"><button class="btn ghost" data-fav="${i.id}">${f?"Saved":"Save"}</button><button class="btn ${d?"ghost":""}" data-done="${i.id}">${d?"Completed":"Mark as learned"}</button></div>
+    <div class="notice">Found a mistake in the sign or the text? <button class="btn small ghost" data-go="feedback" style="margin-left:6px">Report a problem</button></div></div>`+nav(); },
+
+  dictionary(){ const q=S.dq.toLowerCase(); const L=C.dictionary.filter(d=>!q||d.word.toLowerCase().includes(q));
+    return `<div class="screen fade"><h1>USL dictionary</h1><input type="search" id="dq" placeholder="Search a word" value="${esc(S.dq)}" aria-label="Search dictionary">
+    <p class="muted" style="margin-top:10px">Signs appear after review by Deaf USL users and qualified specialists.</p><div class="grid">`+
+    L.map(d=>`<div><div class="sign"><span><b style="font-size:1.2em">${esc(d.word)}</b><br>Sign pending</span></div><p class="muted" style="font-size:.8em;margin-top:6px">${esc(d.note)}</p></div>`).join("")+`</div></div>`+nav(); },
+
+  quiz(){ const Q=C.quiz;
+    if(S.quizDone) return `<div class="screen fade">${hdr("Quiz result","home")}<div class="hero"><h1>${S.quizScore} of ${Q.length}</h1><p style="margin:0">Good effort. Keep learning.</p></div><button class="btn" data-restart="1">Try again</button></div>`+nav();
+    const q=Q[S.quizI];
+    return `<div class="screen fade">${hdr("Quiz","home")}<div class="bar" aria-hidden="true"><i style="width:${(S.quizI/Q.length)*100}%"></i></div>
+    <p class="muted" style="margin-top:8px">Question ${S.quizI+1} of ${Q.length}</p><h2 style="margin-top:0">${esc(q.q)}</h2>`+
+    q.a.map((a,k)=>{ let cl=""; if(S.picked!==null){ if(k===q.c)cl="good"; else if(k===S.picked)cl="bad"; }
+      return `<button class="opt ${cl}" data-pick="${k}" ${S.picked!==null?"disabled":""}>${esc(a)}</button>`; }).join("")+
+    (S.picked!==null?`<button class="btn" data-next="1">${S.quizI+1<Q.length?"Next question":"See result"}</button>`:"")+`</div>`+nav(); },
+
+  profile(){ return `<div class="screen fade"><h1>Profile</h1><p class="muted">Guest learner. No account or personal data is collected in this prototype.</p>
+    <div class="card"><b>My progress</b><div class="bar" style="margin:8px 0"><i style="width:${Math.round(S.progress.length/C.items.length*100)}%"></i></div><span class="muted">${S.progress.length} of ${C.items.length} lessons learned</span></div>
+    <button class="card" data-go="favorites"><b>Saved lessons</b> (${S.fav.length})</button>
+    <button class="card" data-go="accessibility"><b>Accessibility and settings</b></button>
+    <button class="card" data-go="campaign"><b>Support Deaf ministry</b><br><span class="muted">Demonstration only</span></button>
+    <button class="card" data-go="feedback"><b>Feedback and report a problem</b></button>
+    <button class="card" data-go="about"><b>About and privacy</b></button></div>`+nav(); },
+
+  favorites(){ const L=C.items.filter(i=>S.fav.includes(i.id));
+    return `<div class="screen fade">${hdr("Saved lessons","profile")}`+(L.length?L.map(i=>`<button class="card" data-item="${i.id}"><b>${esc(i.title)}</b></button>`).join(""):'<p class="muted">Nothing saved yet. Open a lesson and choose Save.</p>')+`</div>`+nav(); },
+
+  accessibility(){ return `<div class="screen fade">${hdr("Accessibility","profile")}
+    <div class="toggle"><span>Large text</span><button class="chip ${S.textSize==="large"?"on":""}" data-pref="text">${S.textSize==="large"?"On":"Off"}</button></div>
+    <div class="toggle"><span>High contrast</span><button class="chip ${S.contrast==="high"?"on":""}" data-pref="contrast">${S.contrast==="high"?"On":"Off"}</button></div>
+    <p class="muted" style="margin-top:14px">Every video will have readable text beside it. Offline downloads will be added where licensing allows.</p></div>`+nav(); },
+
+  feedback(){ return `<div class="screen fade">${hdr("Report a problem","profile")}
+    <p class="muted">Tell us what looks wrong: a sign, a prayer, or the app itself.</p>
+    <input type="text" id="fb" placeholder="Describe the problem" aria-label="Describe the problem">
+    <button class="btn" id="sendfb" style="margin-top:12px">Send</button><p id="fbmsg" class="muted" style="margin-top:10px"></p>
+    <p class="muted" style="font-size:.9em">Prototype: this does not send anything yet. Contact: catholicusl.platform@gmail.com</p></div>`+nav(); },
+
+  about(){ return `<div class="screen fade">${hdr("About","profile")}<img src="logo.png" alt="" style="width:60%;display:block;margin:0 auto 12px;border-radius:16px">
+    <p>Catholic USL helps Deaf Catholics in Uganda take part in the life of the Church through Ugandan Sign Language, readable text and learning tools.</p>
+    <p>This is a concept prototype. Sample content is not approved teaching. Deaf community representatives, USL specialists and Church reviewers will validate all content before publication.</p>
+    <p><b>Privacy:</b> this prototype collects no personal information.</p></div>`+nav(); },
+
+  campaign(){ return `<div class="screen fade">${hdr("Support Deaf ministry","profile")}
+    <div class="notice"><b>Demonstration only.</b> No real money is taken. Real giving needs an agreed fund holder, financial controls and approval first.</div>`+
+    C.campaigns.map(c=>`<button class="card" data-camp="${c.id}"><b>${esc(c.title)}</b><p class="muted" style="margin:4px 0 8px">${esc(c.need)}</p><div class="bar"><i style="width:${Math.round(c.raised/c.target*100)}%"></i></div><p style="margin:6px 0 0;font-size:.9em">${fmt(c.raised)} of ${fmt(c.target)}</p></button>`).join("")+`</div>`+nav(); },
+
+  donate(){ const c=C.campaigns.find(x=>x.id===S.camp);
+    if(S.donated) return `<div class="screen fade">${hdr("Thank you","campaign")}<div class="hero"><h1>Simulated gift</h1><p style="margin:0">${fmt(S.amount)} to ${esc(c.title)}${S.anon?" (anonymous)":""}</p></div><p>No money was taken. In a real campaign you would now confirm with Mobile Money.</p><button class="btn" data-go="campaign">Back to campaigns</button></div>`+nav();
+    return `<div class="screen fade">${hdr(c.title,"campaign")}<p>${esc(c.need)}</p><h2>Choose an amount</h2>`+
+    [10000,20000,50000,100000].map(a=>`<button class="opt ${S.amount===a?"sel":""}" data-amt="${a}">${fmt(a)}</button>`).join("")+
+    `<button class="opt ${S.anon?"sel":""}" data-anon="1">Give anonymously: ${S.anon?"Yes":"No"}</button>
+    <button class="btn gold" data-confirm="1" ${S.amount?"":"disabled style='opacity:.5'"}>Confirm simulated gift</button></div>`+nav(); }
+};
+
+function render(){ $app.innerHTML = screens[S.screen](); }
+
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button"); if(!t) return; const d=t.dataset;
+  if(d.go){ if(d.go==="library"){S.q="";} return go(d.go); }
+  if(d.lang){ S.lang=d.lang; return render(); }
+  if(d.tile){ if(d.to==="library"){ S.cat={Prayers:"Prayers",Scripture:"Scripture",Mass:"Mass",Sacraments:"Sacraments"}[d.tile]||"All"; S.q=""; } return go(d.to); }
+  if(d.cat){ S.cat=d.cat; return render(); }
+  if(d.item) return go("item",{item:d.item});
+  if(d.fav){ S.fav=S.fav.includes(d.fav)?S.fav.filter(x=>x!==d.fav):[...S.fav,d.fav]; save(); return render(); }
+  if(d.done){ S.progress=S.progress.includes(d.done)?S.progress.filter(x=>x!==d.done):[...S.progress,d.done]; save(); return render(); }
+  if(d.pick){ S.picked=+d.pick; if(S.picked===C.quiz[S.quizI].c) S.quizScore++; return render(); }
+  if(d.next){ S.picked=null; if(S.quizI+1<C.quiz.length) S.quizI++; else S.quizDone=true; return render(); }
+  if(d.restart){ Object.assign(S,{quizI:0,quizScore:0,picked:null,quizDone:false}); return render(); }
+  if(d.pref){ if(d.pref==="text") S.textSize=S.textSize==="large"?"normal":"large"; else S.contrast=S.contrast==="high"?"normal":"high"; save(); applyPrefs(); return render(); }
+  if(d.camp) return go("donate",{camp:d.camp,amount:null,anon:false,donated:false});
+  if(d.amt){ S.amount=+d.amt; return render(); }
+  if(d.anon){ S.anon=!S.anon; return render(); }
+  if(d.confirm && S.amount){ S.donated=true; return render(); }
+  if(t.id==="sendfb"){ document.getElementById("fbmsg").textContent="Thank you. In the live app this will reach the review team."; }
+});
+document.addEventListener("input",e=>{
+  if(e.target.id==="q"){ S.q=e.target.value; const p=e.target.selectionStart; render(); const n=document.getElementById("q"); n.focus(); n.setSelectionRange(p,p); }
+  if(e.target.id==="dq"){ S.dq=e.target.value; const p=e.target.selectionStart; render(); const n=document.getElementById("dq"); n.focus(); n.setSelectionRange(p,p); }
+});
+render();
+</script>
+</body>
+</html>
