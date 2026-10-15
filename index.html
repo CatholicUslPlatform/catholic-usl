@@ -53,7 +53,7 @@ p{line-height:1.5;margin:0 0 10px}
 .chips{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px}
 .chip{flex:none;border:2px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;color:var(--navy);font-weight:700}
 .chip.on{background:var(--navy2);color:#fff;border-color:var(--navy2)}
-input[type=search],input[type=text],textarea{width:100%;padding:14px;border:2px solid var(--line);border-radius:12px;font:inherit;background:var(--card);color:var(--ink)}
+input[type=search],input[type=text],input[type=email],input[type=password],textarea{width:100%;padding:14px;border:2px solid var(--line);border-radius:12px;font:inherit;background:var(--card);color:var(--ink)}
 .player{background:var(--navy);border-radius:16px;overflow:hidden;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;color:#fff;text-align:center;padding:14px;margin-bottom:12px}
 .player video{width:100%;height:100%;background:#000}
 .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--card);border-top:2px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -245,15 +245,19 @@ window.CONTENT.config = {
   deafCommunityConfirmed: false,   // set true only after Deaf Catholics have agreed to co-design the app
   contactEmail: "catholicusl.platform@gmail.com",
   coordinator: "Joseph Alibankoha, Project Coordinator",
-  pilotTarget: "UGX 5,000,000 to 10,000,000"
+  pilotTarget: "UGX 5,000,000 to 10,000,000",
+  // Supabase (public values, safe in the browser: access is controlled by database rules).
+  supabaseUrl: "https://dnawieggwsuoupqbdhpv.supabase.co",
+  supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRuYXdpZWdnd3N1b3VwcWJkaHB2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5MDU1ODcsImV4cCI6MjEwNzQ4MTU4N30.BobRoEJtZItoDVB37CgpyxEU0bBpgdCZ1hA_KSqKLss"
 };
 </script>
 <script src="content.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" onerror="void 0"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" onerror="void 0"></script>
 <script>
 const C = window.CONTENT;
 const S = { screen:"welcome", lang:"English", cat:"All", q:"", item:null, fav:[], quizI:0, quizScore:0, picked:null, quizDone:false,
-            scores:{}, fb:[], acts:[], lowData:false, loaded:{}, qz:null, qFor:null, fbType:"Correction", fbWho:"Deaf learner", fbLesson:"General", fbMsg:"", fbSaved:null, nAct:"Training", nParish:"", nCount:"", role:"deaf_catholic", tlang:"English", atab:"queue", audit:[], queue:null, pack:[], msg:"", nTitle:"", nCat:"Prayers", nEn:"", nLg:"", camp:null, step:1, amount:null, other:"", phone:"", network:"MTN Mobile Money", name:"", consent:false, err:"", comment:"", posted:false, camps:null, textSize:"normal", contrast:"normal", progress:[], dq:"" };
+            user:null, authMode:"in", email:"", pass:"", dname:"", authMsg:"", dbq:null, dbfb:null, dbacts:null, dbaudit:null, dbusers:null, dbtot:null, dbErr:"", fbSync:"", scores:{}, fb:[], acts:[], lowData:false, loaded:{}, qz:null, qFor:null, fbType:"Correction", fbWho:"Deaf learner", fbLesson:"General", fbMsg:"", fbSaved:null, nAct:"Training", nParish:"", nCount:"", role:"deaf_catholic", tlang:"English", atab:"queue", audit:[], queue:null, pack:[], msg:"", nTitle:"", nCat:"Prayers", nEn:"", nLg:"", camp:null, step:1, amount:null, other:"", phone:"", network:"MTN Mobile Money", name:"", consent:false, err:"", comment:"", posted:false, camps:null, textSize:"normal", contrast:"normal", progress:[], dq:"" };
 try{ const sv=JSON.parse(localStorage.getItem("cusl")||"{}"); ["fav","progress","scores","fb","acts"].forEach(k=>{ if(sv[k]) S[k]=sv[k]; }); ["textSize","contrast","lowData"].forEach(k=>{ if(sv[k]!==undefined) S[k]=sv[k]; }); }catch(e){}
 function save(){ try{ localStorage.setItem("cusl",JSON.stringify({fav:S.fav,progress:S.progress,scores:S.scores,fb:S.fb,acts:S.acts,textSize:S.textSize,contrast:S.contrast,lowData:S.lowData})); }catch(e){} }
 function applyPrefs(){ document.documentElement.style.setProperty("--fs",S.textSize==="large"?"20px":"17px"); document.documentElement.dataset.contrast=S.contrast; }
@@ -261,6 +265,9 @@ applyPrefs();
 S.camps = JSON.parse(JSON.stringify(C.campaigns));
 S.queue = JSON.parse(JSON.stringify(C.queue));
 const SITE = "https://catholicuslplatform.netlify.app/";
+const SB = (window.supabase && C.config.supabaseUrl) ? window.supabase.createClient(C.config.supabaseUrl, C.config.supabaseKey) : null;
+const live = () => !!(SB && S.user);
+const demo = () => !SB && C.config.demoMode;
 { const hh=location.hash.slice(1); if(S.camps.find(x=>x.id===hh)){ S.screen="campaignDetail"; S.camp=hh; } }
 
 const I = {
@@ -278,13 +285,13 @@ const I = {
 };
 const $app = document.getElementById("app");
 const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const go = (screen, extra={}) => { Object.assign(S,{screen},extra); window.scrollTo(0,0); render(); };
+const go = (screen, extra={}) => { Object.assign(S,{screen},extra); window.scrollTo(0,0); render(); if(screen==="admin") loadTab(); };
 const fmt = n => "UGX " + n.toLocaleString("en-UG");
 const statusBadge = s => s==="approved" ? '<span class="badge ok">Approved</span>' : s==="usl-reviewed" ? '<span class="badge ok">USL reviewed</span>' : '<span class="badge">Sample, pending review</span>';
 
 function nav(){
   const t=[["home","Home",I.home],["library","Library",I.lib],["dictionary","Dictionary",I.search],["profile","Profile",I.user]];
-  const cur = {item:"library",quiz:"home",mass:"home",donate:"profile",progress:"profile",privacy:"profile",project:"home",roles:"profile",admin:"profile",campaign:"profile",campaignDetail:"profile",accessibility:"profile",about:"profile"}[S.screen]||S.screen;
+  const cur = {item:"library",quiz:"home",mass:"home",donate:"profile",signin:"profile",progress:"profile",privacy:"profile",project:"home",roles:"profile",admin:"profile",campaign:"profile",campaignDetail:"profile",accessibility:"profile",about:"profile"}[S.screen]||S.screen;
   return '<nav class="nav" aria-label="Main">'+t.map(([k,l,ic])=>`<button class="${cur===k?"on":""}" data-go="${k}" aria-label="${l}">${ic}<span>${l}</span></button>`).join("")+'</nav>';
 }
 const hdr = (title, back="home") => `<div class="topbar"><button class="back" data-go="${back}" aria-label="Back">&#8592;</button><h1 style="margin:0">${esc(title)}</h1></div>`;
@@ -349,8 +356,8 @@ const screens = {
       return `<button class="opt ${cl}" data-pick="${k}" ${S.picked!==null?"disabled":""}>${esc(a)}</button>`; }).join("")+
     (S.picked!==null?`<div class="notice" role="status"><b>${S.picked===q.c?"Correct.":"Not quite."}</b> ${esc(q.e||"")}</div><button class="btn" data-next="1">${S.quizI+1<Q.length?"Next question":"See result"}</button>`:"")+`</div>`+nav(); },
 
-  profile(){ const dm=C.config.demoMode;
-    return `<div class="screen fade"><h1>Profile</h1><p class="muted">Guest learner. No account is needed and no personal data is sent anywhere.</p>
+  profile(){ const dm=demo();
+    return `<div class="screen fade"><h1>Profile</h1><p class="muted">${S.user?"Signed in as "+esc(S.user.email):"No account is needed to learn. Sign in only if you are a teacher, reviewer or partner."}</p>${SB?`<button class="card" data-go="signin"><b>${S.user?"My account":"Sign in or create account"}</b><br><span class="muted">${S.user?esc(role().name):"For teachers, reviewers, interpreters and partners"}</span></button>`:""}
     <button class="card" data-go="progress"><b>My progress</b><div class="bar" style="margin:8px 0"><i style="width:${Math.round(S.progress.length/C.items.length*100)}%"></i></div><span class="muted">${S.progress.length} of ${C.items.length} lessons completed</span></button>
     ${dm?`<button class="card" data-go="roles"><b>Role (demo): ${esc(role().name)}</b><br><span class="muted">${esc(role().level)}. Tap to switch.</span></button>`:""}${tabsFor().length?'<button class="card" data-go="admin"><b>Open dashboard</b></button>':""}
     <button class="card" data-go="favorites"><b>Saved lessons</b> (${S.fav.length})</button>
@@ -372,8 +379,8 @@ const screens = {
 
   feedback(){ const types=["Correction","Request content","Comment"];
     if(S.fbSaved){ const f=S.fbSaved; const body=encodeURIComponent(f.type+" ("+f.who+")\nLesson: "+f.lessonTitle+"\n\n"+f.msg);
-      return `<div class="screen fade">${hdr("Thank you","profile")}<div class="hero"><h1>Saved</h1><p style="margin:0">Your ${esc(f.type.toLowerCase())} is saved on this device and visible to reviewers in the demo dashboard.</p></div>
-      <p>To send it to the project team now, use email:</p><a class="btn gold" href="mailto:${esc(C.config.contactEmail)}?subject=${encodeURIComponent("Catholic USL feedback: "+f.type)}&body=${body}">Send by email</a>
+      return `<div class="screen fade">${hdr("Thank you","profile")}<div class="hero"><h1>Saved</h1><p style="margin:0">${S.fbSync==="ok"?"Your "+esc(f.type.toLowerCase())+" was sent to the project team and saved on this phone.":S.fbSync==="fail"?"Saved on this phone, but it could not be sent right now. Please use email below.":"Saved on this phone."}</p></div>
+      <p>${S.fbSync==="ok"?"You can also email it:":"To send it to the project team, use email:"}</p><a class="btn gold" href="mailto:${esc(C.config.contactEmail)}?subject=${encodeURIComponent("Catholic USL feedback: "+f.type)}&body=${body}">Send by email</a>
       <button class="btn ghost" style="margin-top:10px" data-fbnew="1">Send another</button></div>`+nav(); }
     return `<div class="screen fade">${hdr("Feedback","profile")}<p class="muted">Deaf learners, priests and catechists: tell us what to correct or what to add.</p>
     <div class="chips">`+types.map(t=>`<button class="chip ${S.fbType===t?"on":""}" data-fbt="${t}">${t}</button>`).join("")+`</div>
@@ -415,11 +422,24 @@ const screens = {
     <a class="btn ghost" style="margin-top:10px" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent("Catholic USL: Catholic prayers and teaching in Ugandan Sign Language. "+SITE)}">Share on WhatsApp</a></div>`+nav(); },
 
   privacy(){ return `<div class="screen fade">${hdr("Privacy and my data","profile")}
-    <h2>What this app stores</h2><p>Only on your phone: saved lessons, progress, quiz scores, text settings and any feedback you saved. No account is needed. Nothing is sent to a server by this prototype.</p>
+    <h2>What this app stores</h2><p>On your phone: saved lessons, progress, quiz scores and text settings. You do not need an account to learn, and your progress stays on your phone.</p><h2>If you send feedback</h2><p>The message you write, the lesson and the role you choose are stored so reviewers can act on it. Please do not include private details.</p><h2>If you create an account</h2><p>We store your email, name and role. Passwords are handled by the sign-in service and are never visible to us. Only administrators can change roles.</p>
     <h2>Videos</h2><p>Some videos are shown through YouTube using its privacy-enhanced player. YouTube may collect data when you play them. Low-data mode loads videos only when you tap.</p>
-    <h2>Admin access</h2><p>In the live app, only people given a role by an administrator can review, publish or see reports. The role switcher you may see is a demo. The live version will require sign-in and database rules that block everyone else.</p>
+    <h2>Admin access</h2><p>Only signed-in people given a role by an administrator can review, publish or see reports. Database rules enforce this on the server, so changing the app on a phone does not give access. Every review action and role change is recorded in an audit log.</p>
     <h2>Reports</h2><p>Reports show totals only. Information about Deaf learners is not shown to the public.</p>
     <button class="btn ghost" data-wipe="1">Delete my data on this phone</button></div>`+nav(); },
+
+  signin(){
+    if(!SB) return `<div class="screen fade">${hdr("Account","profile")}<p class="muted">Sign-in is not available in this preview.</p></div>`+nav();
+    if(S.user) return `<div class="screen fade">${hdr("Account","profile")}<div class="card"><b>${esc(S.dispName||"Signed in")}</b><br><span class="muted">${esc(S.user.email)}</span><br><span class="badge ok">${esc(role().name)}</span> <span class="badge">${esc(role().level)}</span></div>
+      <p class="muted">Your role is assigned by a project administrator. Ask them if you need reviewer or partner access.</p>${tabsFor().length?'<button class="btn" data-go="admin">Open dashboard</button>':""}<button class="btn ghost" style="margin-top:10px" data-signout="1">Sign out</button></div>`+nav();
+    return `<div class="screen fade">${hdr("Sign in","profile")}<p class="muted">Learners do not need an account. Teachers, reviewers, interpreters and partners sign in to use their tools.</p>
+      <div class="chips"><button class="chip ${S.authMode==="in"?"on":""}" data-authmode="in">Sign in</button><button class="chip ${S.authMode==="up"?"on":""}" data-authmode="up">Create account</button></div>
+      ${S.authMode==="up"?`<input type="text" data-f="dname" placeholder="Your name" value="${esc(S.dname)}" aria-label="Your name" style="margin-bottom:10px">`:""}
+      <input type="email" data-f="email" autocomplete="email" placeholder="Email" value="${esc(S.email)}" aria-label="Email" style="margin-bottom:10px">
+      <input type="password" data-f="pass" autocomplete="${S.authMode==="up"?"new-password":"current-password"}" placeholder="Password (at least 8 characters)" value="${esc(S.pass)}" aria-label="Password" style="margin-bottom:10px">
+      ${S.authMsg?`<p role="status" style="font-weight:700">${esc(S.authMsg)}</p>`:""}
+      <button class="btn" data-authgo="1">${S.authMode==="up"?"Create account":"Sign in"}</button>
+      <p class="muted" style="font-size:.85em;margin-top:10px">New accounts start as ordinary learners. Never share your password.</p></div>`+nav(); },
 
   roles(){ return `<div class="screen fade">${hdr("Choose a role (demo)","profile")}
     <div class="notice">Demo only, so you can see what each role can do. In the live app an administrator assigns roles after sign-in. Nobody picks their own.</div>`+
@@ -488,11 +508,12 @@ const logA = m => S.audit.unshift({t:new Date().toLocaleTimeString([], {hour:"2-
 const getTrans = (it,l) => (it.translations&&it.translations[l]) || (l==="English"?it.text:null);
 const chk = (ok,l) => `<span class="badge ${ok?"ok":""}">${l}: ${ok?"done":"pending"}</span> `;
 function adminTab(){
-  const t=S.atab;
+  const t=S.atab; const QQ=()=>live()?(S.dbq||[]):S.queue;
+  if(live()&&S.dbErr) return `<p role="alert" style="color:#B3261E;font-weight:700">${esc(S.dbErr)}</p>`;
   if(t==="queue") return '<p class="muted">Each item needs signs, doctrine and a technical check before it can be published. Different people do each check.</p>'+
-    S.queue.map(q=>{ const done=q.usl&&q.doctrine&&q.tech; const b=(k,l)=>`<button class="btn ghost small" style="margin:8px 8px 0 0" data-qa="${q.id}:${k}">${l}</button>`;
+    QQ().map(q=>{ const done=q.usl&&q.doctrine&&q.tech; const b=(k,l)=>`<button class="btn ghost small" style="margin:8px 8px 0 0" data-qa="${q.id}:${k}">${l}</button>`;
       return `<div class="card"><b>${esc(q.title)}</b><br><span class="muted" style="font-size:.9em">${esc(q.type)} &middot; by ${esc(q.by)}</span><br>${chk(q.usl,"Signs")}${chk(q.doctrine,"Doctrine")}${chk(q.tech,"Technical")}${q.published?'<span class="badge ok">Published (demo)</span>':""}${q.flag?`<br><span class="badge">${esc(q.flag)}</span>`:""}<div>`+
-      (can("review_usl")&&!q.usl?b("usl","Confirm signs are accurate"):"")+(can("review_doctrine")&&!q.doctrine?b("doctrine","Confirm doctrine is correct"):"")+(can("tech_check")&&!q.tech?b("tech","Technical check passed"):"")+((can("review_usl")||can("review_doctrine"))&&!q.published?b("changes","Request changes"):"")+(can("publish")&&done&&!q.published?b("publish","Publish"):"")+`</div></div>`; }).join("");
+      (can("review_usl")&&!q.usl?b("usl","Confirm signs are accurate"):"")+(can("review_doctrine")&&!q.doctrine?b("doctrine","Confirm doctrine is correct"):"")+(can("tech_check")&&!q.tech?b("tech","Technical check passed"):"")+((can("review_usl")||can("review_doctrine"))&&!q.published?b("changes","Request changes"):"")+(can("publish")&&done&&!q.published?b("publish","Publish"):"")+`</div></div>`; }).join("")+(QQ().length?"":'<p class="muted">No items in the queue yet.</p>');
   if(t==="submit") return `<p class="muted">Add a signed video link and the words for readers. It goes to the review queue.</p>
     <input type="text" data-f="nTitle" placeholder="Title" value="${esc(S.nTitle)}" aria-label="Title" style="margin-bottom:10px">
     <select data-f="nCat" aria-label="Category" style="width:100%;padding:14px;border:2px solid var(--line);border-radius:12px;font:inherit;background:var(--card);color:var(--ink);margin-bottom:10px">`+["Prayers","Scripture","Mass","Sacraments","Catechesis","Dictionary"].map(x=>`<option ${S.nCat===x?"selected":""}>${x}</option>`).join("")+`</select>
@@ -502,20 +523,72 @@ function adminTab(){
   if(t==="teach") return '<p class="muted">Pick lessons for a class. Use only approved content in class once review is complete.</p>'+
     C.items.map(i=>`<button class="opt ${S.pack.includes(i.id)?"sel":""}" data-pack="${i.id}">${esc(i.title)} ${S.pack.includes(i.id)?"(in pack)":""}</button>`).join("")+`<p><b>${S.pack.length}</b> lessons in your class pack.</p>`+
     (S.pack.length?`<a class="btn gold" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent("Class pack from Catholic USL: "+S.pack.map(id=>C.items.find(x=>x.id===id).title).join(", ")+". "+SITE)}">Share pack on WhatsApp</a>`:"");
-  if(t==="feedback") return S.fb.length?'<p class="muted">Corrections and requests saved on this device (demo). In the live app these arrive in a shared inbox.</p>'+S.fb.map(f=>`<div class="card"><span class="badge ${f.type==="Correction"?"":"ok"}">${esc(f.type)}</span> <span class="muted" style="font-size:.85em">${esc(f.who)} &middot; ${esc(f.date)}</span><br><b>${esc(f.lessonTitle)}</b><p style="margin:4px 0 0">${esc(f.msg)}</p></div>`).join(""):'<p class="muted">No feedback yet. Send some from Profile, then Feedback.</p>';
-  if(t==="reports"){ const parishes=new Set(S.acts.map(a=>a.parish.toLowerCase())).size; const people=S.acts.reduce((s,a)=>s+a.n,0);
-    const reviewed=C.items.filter(i=>i.status==="approved"||i.status==="usl-reviewed").length+S.queue.filter(q=>q.published).length;
+  if(t==="feedback"){ const FB=live()?(S.dbfb||[]):S.fb; return FB.length?`<p class="muted">${live()?"Corrections and requests sent by learners, priests and catechists.":"Saved on this device (demo)."}</p>`+FB.map(f=>`<div class="card"><span class="badge ${f.type==="Correction"?"":"ok"}">${esc(f.type)}</span> <span class="muted" style="font-size:.85em">${esc(f.who)} &middot; ${esc(f.date)}</span><br><b>${esc(f.lessonTitle)}</b><p style="margin:4px 0 0">${esc(f.msg)}</p></div>`).join(""):'<p class="muted">No feedback yet.</p>'; }
+  if(t==="reports"){ const ACTS=live()?(S.dbacts||[]):S.acts; const T=live()?(S.dbtot||{}):null;
+    const parishes=T?(T.parishes||0):new Set(S.acts.map(a=>a.parish.toLowerCase())).size; const people=T?(T.participants||0):S.acts.reduce((s,a)=>s+a.n,0);
+    const reviewed=T?(T.reviewed||0):C.items.filter(i=>i.status==="approved"||i.status==="usl-reviewed").length+S.queue.filter(q=>q.published).length;
     const m=(n,l)=>`<div class="card"><b style="font-size:1.6em">${n}</b><br>${l}</div>`;
-    return '<div class="notice">Totals only. Figures come from what is logged on this device in the demo. The live app will use a shared, access-controlled database.</div><div class="grid">'+m(S.acts.length,"Pilot activities")+m(people,"Participants")+m(parishes,"Participating parishes")+m(reviewed,"Reviewed lessons")+m(S.fb.length,"Feedback received")+m(S.progress.length,"Lessons completed here")+'</div>'+
+    return `<div class="notice">Totals only. ${live()?"Figures come from the shared database.":"Demo figures from this device."}</div><div class="grid">`+m(T?(T.activities||0):S.acts.length,"Pilot activities")+m(people,"Participants")+m(parishes,"Participating parishes")+m(reviewed,"Reviewed lessons")+m(T?(T.feedback||0):S.fb.length,"Feedback received")+m(S.progress.length,"Lessons completed here")+'</div>'+
     `<h2>Log a pilot activity</h2><select data-f="nAct" aria-label="Activity type" style="width:100%;padding:14px;border:2px solid var(--line);border-radius:12px;font:inherit;background:var(--card);color:var(--ink);margin-bottom:10px">`+["Training","Parish visit","Feedback session","Content review","Other"].map(x=>`<option ${S.nAct===x?"selected":""}>${x}</option>`).join("")+`</select>
     <input type="text" data-f="nParish" placeholder="Parish or group" value="${esc(S.nParish)}" aria-label="Parish or group" style="margin-bottom:10px"><input type="text" inputmode="numeric" data-f="nCount" placeholder="Number of participants" value="${esc(S.nCount)}" aria-label="Participants" style="margin-bottom:10px">
     <button class="btn" data-addact="1">Log activity</button>`+(S.msg?`<p class="muted" role="status" style="margin-top:10px">${esc(S.msg)}</p>`:"")+
-    (S.acts.length?'<h2>Recent activities</h2>'+S.acts.slice(0,8).map(a=>`<div class="toggle"><span><b>${esc(a.type)}</b><br><span class="muted" style="font-size:.9em">${esc(a.parish)} &middot; ${a.n} people</span></span><span class="muted">${esc(a.date)}</span></div>`).join(""):""); }
+    (ACTS.length?'<h2>Recent activities</h2>'+ACTS.slice(0,8).map(a=>`<div class="toggle"><span><b>${esc(a.type)}</b><br><span class="muted" style="font-size:.9em">${esc(a.parish)} &middot; ${a.n} people</span></span><span class="muted">${esc(a.date)}</span></div>`).join(""):""); }
   if(t==="share") return `<p>Help your parishes and members find Catholic USL.</p><a class="btn gold" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent("Catholic USL: Catholic prayers and teaching in Ugandan Sign Language. "+SITE)}">Share on WhatsApp</a><button class="btn ghost" style="margin-top:10px" data-copy="1">Copy link</button>`;
+  if(t==="users"&&live()){ const U=S.dbusers||[]; return '<p class="muted">Change a person\'s role here. Every change is written to the audit log.</p>'+U.map(u=>`<div class="card"><b>${esc(u.display_name||"Unnamed")}</b><br><select data-urole="${u.id}" aria-label="Role for ${esc(u.display_name||"user")}" style="width:100%;padding:12px;border:2px solid var(--line);border-radius:12px;font:inherit;background:var(--card);color:var(--ink);margin-top:8px">${C.roles.map(r=>`<option value="${r.id}" ${u.role===r.id?"selected":""}>${esc(r.name)} (${esc(r.level)})</option>`).join("")}</select></div>`).join("")||'<p class="muted">No users yet.</p>'; }
   if(t==="users") return '<p class="muted">Roles are assigned by an administrator. Every change is written to the audit log.</p>'+C.roles.map(r=>`<div class="card"><b>${esc(r.name)}</b> <span class="badge ${r.level==="Super admin"?"":"ok"}">${esc(r.level)}</span><p class="muted" style="margin:6px 0">${esc(r.desc)}</p><span style="font-size:.85em">${r.perms.map(p=>C.permLabels[p]).join("; ")}</span></div>`).join("")+'<button class="btn ghost" data-invite="1">Invite a user (demo)</button>';
-  if(t==="audit") return S.audit.length?S.audit.map(a=>`<div class="toggle"><span><b>${esc(a.who)}</b><br><span class="muted" style="font-size:.9em">${esc(a.m)}</span></span><span class="muted">${esc(a.t)}</span></div>`).join(""):'<p class="muted">No actions yet. Actions you take in this demo appear here.</p>';
+  if(t==="audit"){ const AU=live()?(S.dbaudit||[]):S.audit; return AU.length?AU.map(a=>`<div class="toggle"><span><b>${esc(a.who)}</b><br><span class="muted" style="font-size:.9em">${esc(a.m)}</span></span><span class="muted" style="text-align:right">${esc(a.t)}</span></div>`).join(""):'<p class="muted">No actions recorded yet.</p>'; }
   return "";
 }
+// ---------- Supabase: sign-in and shared data ----------
+async function setUser(session){
+  S.user = session ? session.user : null;
+  if(S.user){ try{ const {data}=await SB.from("profiles").select("role,display_name").eq("id",S.user.id).single(); if(data){ S.role=data.role; S.dispName=data.display_name; } }catch(e){} if(S.screen==="signin") S.screen="profile"; }
+  else { S.role="deaf_catholic"; S.dbq=S.dbfb=S.dbacts=S.dbaudit=S.dbusers=S.dbtot=null; if(S.screen==="admin"||S.screen==="roles") S.screen="profile"; }
+  render();
+}
+async function doAuth(){
+  const email=S.email.trim(), pass=S.pass;
+  if(!email||pass.length<8){ S.authMsg="Enter your email and a password of at least 8 characters."; return render(); }
+  S.authMsg="Please wait..."; render();
+  try{
+    if(S.authMode==="up"){ const {data,error}=await SB.auth.signUp({email,password:pass,options:{data:{display_name:S.dname.trim()}}}); S.authMsg=error?error.message:(data.session?"":"Account created. Check your email to confirm it, then sign in."); }
+    else { const {error}=await SB.auth.signInWithPassword({email,password:pass}); S.authMsg=error?error.message:""; }
+  }catch(e){ S.authMsg="Could not reach the server. Check your internet and try again."; }
+  S.pass=""; render();
+}
+const mapQ = r => ({id:r.id,title:r.title,type:r.category+(r.words_lg?" (English + Luganda)":" (English)"),by:r.submitted_role||"",usl:r.usl_ok,doctrine:r.doctrine_ok,tech:r.tech_ok,published:r.published,flag:r.flag||""});
+async function loadTab(){
+  if(!live()) return; const t=S.atab; S.dbErr="";
+  try{
+    if(t==="queue"){ const {data,error}=await SB.from("review_items").select("*").order("created_at",{ascending:false}); if(error) throw error; S.dbq=data.map(mapQ); }
+    else if(t==="feedback"){ const {data,error}=await SB.from("feedback").select("*").order("created_at",{ascending:false}).limit(100); if(error) throw error; S.dbfb=data.map(f=>({type:f.type,who:f.who||"",lessonTitle:f.lesson_title||"General or new content",msg:f.message,date:new Date(f.created_at).toLocaleDateString()})); }
+    else if(t==="reports"){ const a=await SB.from("activities").select("*").order("created_at",{ascending:false}).limit(100); if(a.error) throw a.error; S.dbacts=a.data.map(x=>({type:x.type,parish:x.parish,n:x.participants,date:new Date(x.created_at).toLocaleDateString()}));
+      const tt=await SB.rpc("pilot_totals"); if(tt.error) throw tt.error; S.dbtot=tt.data; }
+    else if(t==="audit"){ const {data,error}=await SB.from("audit_logs").select("*").order("created_at",{ascending:false}).limit(60); if(error) throw error; S.dbaudit=data.map(a=>({who:a.role||"system",m:a.message,t:new Date(a.created_at).toLocaleString([], {day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})})); }
+    else if(t==="users"){ const {data,error}=await SB.from("profiles").select("*").order("created_at",{ascending:true}); if(error) throw error; S.dbusers=data; }
+  }catch(e){ S.dbErr=(e&&e.message)||"Could not load data."; }
+  render();
+}
+async function dbQueueAction(arg){
+  const [id,k]=arg.split(":"); let patch=null;
+  if(k==="usl") patch={usl_ok:true,flag:null}; else if(k==="doctrine") patch={doctrine_ok:true,flag:null}; else if(k==="tech") patch={tech_ok:true}; else if(k==="publish") patch={published:true};
+  else if(k==="changes") patch={flag:"Changes requested by "+role().name,usl_ok:false,doctrine_ok:false,published:false};
+  if(!patch) return; const {error}=await SB.from("review_items").update(patch).eq("id",id); S.dbErr=error?error.message:""; await loadTab();
+}
+async function dbSubmit(){
+  if(!S.nTitle.trim()||!S.nEn.trim()){ S.msg="Add a title and the English words."; return render(); }
+  const {error}=await SB.from("review_items").insert({title:S.nTitle.trim(),category:S.nCat,words_en:S.nEn.trim(),words_lg:S.nLg.trim()||null});
+  if(error){ S.msg=error.message; return render(); }
+  S.nTitle="";S.nEn="";S.nLg=""; S.msg="Sent for review. It now appears in the review queue."; render();
+}
+async function dbAddAct(){
+  const n=parseInt(String(S.nCount).replace(/\D/g,""),10)||0; if(!S.nParish.trim()){ S.msg="Add the parish or group."; return render(); }
+  const {error}=await SB.from("activities").insert({type:S.nAct,parish:S.nParish.trim(),participants:n});
+  if(error){ S.msg=error.message; return render(); }
+  S.nParish="";S.nCount="";S.msg="Activity logged."; await loadTab();
+}
+async function changeRole(id,r){ const {error}=await SB.from("profiles").update({role:r}).eq("id",id); S.dbErr=error?error.message:""; await loadTab(); }
+
 const cur = () => S.camps.find(x=>x.id===S.camp) || S.camps[0];
 const pct = c => Math.min(100, Math.round(c.raised/c.target*100));
 const shareUrl = c => SITE + "#" + c.id;
@@ -534,9 +607,16 @@ document.addEventListener("click",e=>{
   if(d.fav){ S.fav=S.fav.includes(d.fav)?S.fav.filter(x=>x!==d.fav):[...S.fav,d.fav]; save(); return render(); }
   if(d.done){ S.progress=S.progress.includes(d.done)?S.progress.filter(x=>x!==d.done):[...S.progress,d.done]; save(); return render(); }
   if(d.pref){ if(d.pref==="text") S.textSize=S.textSize==="large"?"normal":"large"; else if(d.pref==="low") S.lowData=!S.lowData; else S.contrast=S.contrast==="high"?"normal":"high"; save(); applyPrefs(); return render(); }
+  if(d.authmode){ S.authMode=d.authmode; S.authMsg=""; return render(); }
+  if(d.authgo) return doAuth();
+  if(d.signout){ SB.auth.signOut(); return; }
+  if(d.role && !demo()) return;
+  if(d.qa && live()) return dbQueueAction(d.qa);
+  if(d.submit && live()) return dbSubmit();
+  if(d.addact && live()) return dbAddAct();
   if(d.role){ S.role=d.role; S.atab=""; return render(); }
   if(d.tl){ S.tlang=d.tl; return render(); }
-  if(d.atab){ S.atab=d.atab; S.msg=""; return render(); }
+  if(d.atab){ S.atab=d.atab; S.msg=""; render(); return loadTab(); }
   if(d.qa){ const [id,k]=d.qa.split(":"); const q=S.queue.find(x=>x.id===id); if(!q) return;
     if(k==="changes"){ if(can("review_usl")||can("review_doctrine")){ q.flag="Changes requested by "+role().name; q.usl=false; q.doctrine=false; q.published=false; logA("Requested changes: "+q.title); } return render(); }
     const need={usl:"review_usl",doctrine:"review_doctrine",tech:"tech_check",publish:"publish"}[k];
@@ -556,7 +636,9 @@ document.addEventListener("click",e=>{
   if(d.fbnew){ S.fbSaved=null; S.fbMsg=""; return render(); }
   if(d.fbsave){ if(!S.fbMsg.trim()){ S.err="Please write a short message."; return render(); } S.err="";
     const it=C.items.find(x=>x.id===S.fbLesson); const f={type:S.fbType,who:S.fbWho,lesson:S.fbLesson,lessonTitle:it?it.title:"General or new content",msg:S.fbMsg.trim(),date:new Date().toLocaleDateString()};
-    S.fb.unshift(f); S.fbSaved=f; S.fbMsg=""; save(); return render(); }
+    S.fb.unshift(f); S.fbSaved=f; S.fbMsg=""; S.fbSync=""; save();
+    if(SB){ SB.from("feedback").insert({type:f.type,who:f.who,lesson_id:f.lesson==="General"?null:f.lesson,lesson_title:f.lessonTitle,message:f.msg}).then(r=>{ S.fbSync=r.error?"fail":"ok"; render(); }); }
+    return render(); }
   if(d.addact){ if(!can("reports")) return; const n=parseInt(String(S.nCount).replace(/\D/g,""),10)||0; if(!S.nParish.trim()){ S.msg="Add the parish or group."; return render(); }
     S.acts.unshift({type:S.nAct,parish:S.nParish.trim(),n,date:new Date().toLocaleDateString()}); logA("Logged activity: "+S.nAct+" at "+S.nParish.trim()); S.nParish="";S.nCount="";S.msg="Activity logged."; save(); return render(); }
   if(d.wipe){ try{ localStorage.removeItem("cusl"); }catch(e){} Object.assign(S,{fav:[],progress:[],scores:{},fb:[],acts:[],lowData:false,textSize:"normal",contrast:"normal"}); applyPrefs(); return go("profile"); }
@@ -573,12 +655,14 @@ document.addEventListener("click",e=>{
   if(d.copy){ try{ navigator.clipboard.writeText(S.screen==="admin"?SITE:shareUrl(cur())); t.textContent="Link copied"; }catch(e){ t.textContent=shareUrl(cur()); } return; }
 });
 document.addEventListener("input",e=>{
+  if(e.target.dataset&&e.target.dataset.urole){ return changeRole(e.target.dataset.urole,e.target.value); }
   const f=e.target.dataset&&e.target.dataset.f; if(f){ S[f]=e.target.value; if(f==="other") S.amount=null; return; }
   if(e.target.id==="q"){ S.q=e.target.value; const p=e.target.selectionStart; render(); const n=document.getElementById("q"); n.focus(); n.setSelectionRange(p,p); }
   if(e.target.id==="dq"){ S.dq=e.target.value; const p=e.target.selectionStart; render(); const n=document.getElementById("dq"); n.focus(); n.setSelectionRange(p,p); }
 });
 window.addEventListener&&window.addEventListener("online",render);
 window.addEventListener&&window.addEventListener("offline",render);
+if(SB){ SB.auth.getSession().then(r=>setUser(r.data.session)); SB.auth.onAuthStateChange((ev,s)=>{ setTimeout(()=>setUser(s),0); }); }
 try{ if("serviceWorker" in navigator && location.protocol.indexOf("http")===0 && location.hostname.indexOf("claude")<0) navigator.serviceWorker.register("sw.js"); }catch(e){}
 render();
 </script>

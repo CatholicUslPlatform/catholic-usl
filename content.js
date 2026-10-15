@@ -165,5 +165,8 @@ window.CONTENT.config = {
   deafCommunityConfirmed: false,   // set true only after Deaf Catholics have agreed to co-design the app
   contactEmail: "catholicusl.platform@gmail.com",
   coordinator: "Joseph Alibankoha, Project Coordinator",
-  pilotTarget: "UGX 5,000,000 to 10,000,000"
+  pilotTarget: "UGX 5,000,000 to 10,000,000",
+  // Supabase (public values, safe in the browser: access is controlled by database rules).
+  supabaseUrl: "https://dnawieggwsuoupqbdhpv.supabase.co",
+  supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRuYXdpZWdnd3N1b3VwcWJkaHB2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5MDU1ODcsImV4cCI6MjEwNzQ4MTU4N30.BobRoEJtZItoDVB37CgpyxEU0bBpgdCZ1hA_KSqKLss"
 };

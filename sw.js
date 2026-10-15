@@ -1,6 +1,6 @@
 // Catholic USL service worker: lets lesson text open without internet after the first visit.
 // Change V when you release a new version so phones refresh their copy.
-const V = "cusl-v2";
+const V = "cusl-v3";
 const CORE = ["./", "index.html", "content.js", "logo.png", "icon-192.png", "icon-512.png", "manifest.json"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(V).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(k => Promise.all(k.filter(x => x !== V).map(x => caches.delete(x)))).then(() => self.clients.claim())); });
