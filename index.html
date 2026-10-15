@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Catholic USL</title>
 <meta name="theme-color" content="#02205A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Catholic USL">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -324,7 +327,7 @@ const screens = {
     const T=[["Scripture","Scripture",I.cross,"library"],["Prayers","Prayers",I.hands,"library"],["Mass","The Holy Mass",I.cup,"library"],["Dictionary","Learn USL",I.search,"dictionary"],["Catechesis","Catechesis",I.book,"library"],["Sacraments","Sacraments",I.water,"library"]];
     return `<div class="screen fade"><div class="hero"><div class="sun"></div><div class="row" style="margin-bottom:10px"><img src="icon-192.png" alt="" style="width:64px;height:64px;border-radius:14px"><div><b style="font-size:1.3em">Catholic USL</b><br><span style="opacity:.9;font-size:.9em">Catholic Faith, Clearly Communicated.</span></div></div>
     <p style="margin:0">Catholic prayers, Scripture and teaching in Ugandan Sign Language, with words alongside, for Deaf Catholics and their communities.</p></div>
-    <div class="grid">`+T.map(([k,l,ic,to])=>`<button class="tile" data-tile="${k}" data-to="${to}">${ic}<span>${l}</span></button>`).join("")+`</div>
+    ${installCard()}<div class="grid">`+T.map(([k,l,ic,to])=>`<button class="tile" data-tile="${k}" data-to="${to}">${ic}<span>${l}</span></button>`).join("")+`</div>
     ${cf.deafCommunityConfirmed?'<div class="notice" style="background:#E8F5EC;border-color:#8AD0A3"><b>Designed with the Deaf community.</b></div>':'<div class="notice">We are inviting Deaf Catholics to help design this app. All lessons are demonstrations until reviewed.</div>'}
     ${next?`<h2>Continue learning</h2><button class="card" data-item="${next.id}"><b>${esc(next.title)}</b><br><span class="muted">${esc(next.desc)}</span></button>`:'<h2>Well done</h2><p>You have completed every lesson.</p>'}
     <button class="card" data-go="progress"><b>My progress</b><br><span class="muted">${S.progress.length} of ${C.items.length} lessons completed</span></button>
@@ -362,7 +365,7 @@ const screens = {
     (S.picked!==null?`<div class="notice" role="status"><b>${S.picked===q.c?"Correct.":"Not quite."}</b> ${esc(q.e||"")}</div><button class="btn" data-next="1">${S.quizI+1<Q.length?"Next question":"See result"}</button>`:"")+`</div>`+nav(); },
 
   profile(){ const dm=demo();
-    return `<div class="screen fade"><h1>Profile</h1><p class="muted">${S.user?"Signed in as "+esc(S.user.email):"No account is needed to learn. Sign in only if you are a teacher, reviewer or partner."}</p>${SB?`<button class="card" data-go="signin"><b>${S.user?"My account":"Sign in or create account"}</b><br><span class="muted">${S.user?esc(role().name):"For teachers, reviewers, interpreters and partners"}</span></button>`:""}
+    return `<div class="screen fade"><h1>Profile</h1><p class="muted">${S.user?"Signed in as "+esc(S.user.email):"No account is needed to learn. Sign in only if you are a teacher, reviewer or partner."}</p>${installCard()}${SB?`<button class="card" data-go="signin"><b>${S.user?"My account":"Sign in or create account"}</b><br><span class="muted">${S.user?esc(role().name):"For teachers, reviewers, interpreters and partners"}</span></button>`:""}
     <button class="card" data-go="progress"><b>My progress</b><div class="bar" style="margin:8px 0"><i style="width:${Math.round(S.progress.length/C.items.length*100)}%"></i></div><span class="muted">${S.progress.length} of ${C.items.length} lessons completed</span></button>
     ${dm?`<button class="card" data-go="roles"><b>Role (demo): ${esc(role().name)}</b><br><span class="muted">${esc(role().level)}. Tap to switch.</span></button>`:""}${tabsFor().length?'<button class="card" data-go="admin"><b>Open dashboard</b></button>':""}
     <button class="card" data-go="favorites"><b>Saved lessons</b> (${S.fav.length})</button>
@@ -594,6 +597,18 @@ async function dbAddAct(){
 }
 async function changeRole(id,r){ const {error}=await SB.from("profiles").update({role:r}).eq("id",id); S.dbErr=error?error.message:""; await loadTab(); }
 
+// ---------- Install as an app (PWA) ----------
+let deferredPrompt=null;
+const isStandalone=()=>{ try{ return (window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true; }catch(e){ return false; } };
+const isIOS=()=>/iphone|ipad|ipod/i.test((navigator&&navigator.userAgent)||"");
+function installCard(){
+  if(isStandalone()||S.installed||S.hideInstall) return "";
+  const body = deferredPrompt ? '<button class="btn gold" data-install="1">Install the app</button>'
+    : isIOS() ? '<p style="margin:0">On iPhone: tap the Share button in Safari, then <b>Add to Home Screen</b>.</p>'
+    : '<p style="margin:0">Open your browser menu (three dots) and tap <b>Install app</b> or <b>Add to Home screen</b>.</p>';
+  return `<div class="card" style="border-color:var(--gold)"><b>Install Catholic USL on your phone</b><p class="muted" style="margin:4px 0 10px">Opens like a normal app, starts fast, and saved lessons open without internet.</p>${body}<button class="chip" style="margin-top:10px" data-hideinstall="1">Not now</button></div>`;
+}
+
 const cur = () => S.camps.find(x=>x.id===S.camp) || S.camps[0];
 const pct = c => Math.min(100, Math.round(c.raised/c.target*100));
 const shareUrl = c => SITE + "#" + c.id;
@@ -612,6 +627,8 @@ document.addEventListener("click",e=>{
   if(d.fav){ S.fav=S.fav.includes(d.fav)?S.fav.filter(x=>x!==d.fav):[...S.fav,d.fav]; save(); return render(); }
   if(d.done){ S.progress=S.progress.includes(d.done)?S.progress.filter(x=>x!==d.done):[...S.progress,d.done]; save(); return render(); }
   if(d.pref){ if(d.pref==="text") S.textSize=S.textSize==="large"?"normal":"large"; else if(d.pref==="low") S.lowData=!S.lowData; else S.contrast=S.contrast==="high"?"normal":"high"; save(); applyPrefs(); return render(); }
+  if(d.install){ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(()=>{ deferredPrompt=null; render(); }); } return; }
+  if(d.hideinstall){ S.hideInstall=true; return render(); }
   if(d.authmode){ S.authMode=d.authmode; S.authMsg=""; return render(); }
   if(d.authgo) return doAuth();
   if(d.signout){ SB.auth.signOut(); return; }
@@ -665,6 +682,8 @@ document.addEventListener("input",e=>{
   if(e.target.id==="q"){ S.q=e.target.value; const p=e.target.selectionStart; render(); const n=document.getElementById("q"); n.focus(); n.setSelectionRange(p,p); }
   if(e.target.id==="dq"){ S.dq=e.target.value; const p=e.target.selectionStart; render(); const n=document.getElementById("dq"); n.focus(); n.setSelectionRange(p,p); }
 });
+window.addEventListener&&window.addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); deferredPrompt=e; render(); });
+window.addEventListener&&window.addEventListener("appinstalled",()=>{ deferredPrompt=null; S.installed=true; render(); });
 window.addEventListener&&window.addEventListener("online",render);
 window.addEventListener&&window.addEventListener("offline",render);
 if(SB){ SB.auth.getSession().then(r=>setUser(r.data.session)); SB.auth.onAuthStateChange((ev,s)=>{ setTimeout(()=>setUser(s),0); }); }

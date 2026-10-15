@@ -1,1 +1,37 @@
-{"name":"Catholic USL","short_name":"Catholic USL","description":"Catholic Faith, Clearly Communicated.","start_url":"./","display":"standalone","background_color":"#02205A","theme_color":"#02205A","icons":[{"src":"icon-192.png","sizes":"192x192","type":"image/png"},{"src":"icon-512.png","sizes":"512x512","type":"image/png"}]}
+{
+ "name": "Catholic USL",
+ "short_name": "Catholic USL",
+ "description": "Catholic Faith, Clearly Communicated.",
+ "start_url": "./",
+ "display": "standalone",
+ "background_color": "#02205A",
+ "theme_color": "#02205A",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ],
+ "id": "/",
+ "scope": "./",
+ "orientation": "portrait",
+ "categories": [
+  "education",
+  "lifestyle"
+ ],
+ "lang": "en"
+}
